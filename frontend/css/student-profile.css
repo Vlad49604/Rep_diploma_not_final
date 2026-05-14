@@ -1,0 +1,147 @@
+/* css/profile.css */
+
+.profile-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 30px;
+    border: none;
+}
+
+/* Велике коло аватара */
+.avatar-circle-lg {
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, #4caf50, #1b5e20);
+    color: white;
+    font-size: 4.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 10px 30px rgba(46, 125, 50, 0.2);
+    font-weight: 800;
+}
+
+.edit-avatar-btn {
+    width: 42px;
+    height: 42px;
+    border: 4px solid #fff !important;
+    bottom: 0;
+    right: 0;
+}
+
+/* Іконки блоків */
+.icon-box-green {
+    width: 45px;
+    height: 45px;
+    background: #e8f5e9;
+    color: #1b5e20;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* Список курсів у профілі */
+.course-management-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f8fcf9;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(27, 94, 32, 0.05);
+}
+
+.extra-small { font-size: 0.7rem; }
+.uppercase-tracking { text-transform: uppercase; letter-spacing: 1px; }
+
+/* Уніфікація з іншими сторінками */
+main {
+    margin-top: 100px;
+    padding-bottom: 50px;
+}
+
+#savedCardContainer {
+    transition: all 0.3s ease;
+    background: #ffffff !important;
+}
+
+#savedCardContainer:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06) !important;
+    transform: translateY(-2px);
+}
+
+#displaySavedCard {
+    color: #495057 !important;
+    font-weight: 600;
+}
+
+.btn-outline-danger {
+    border-width: 2px;
+    transition: 0.2s;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+}
+
+.danger-zone-card {
+    background: #ffffff;
+    border: 1px solid #fee2e2; /* Дуже ніжний червоний контур */
+    padding: 20px;
+    border-radius: 18px;
+    transition: all 0.3s ease;
+}
+
+.danger-zone-card:hover {
+    border-color: #fecaca; /* Трохи темніший контур при наведенні */
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.05);
+}
+
+/* Стиль для кнопки видалення */
+.danger-zone-card .btn-outline-danger {
+    border-width: 1.5px;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.danger-zone-card .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+
+/* Маленький заголовок над полем вводу (уніфікація) */
+.uppercase-tracking {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.7rem;
+}
+
+/* --- СТИЛЬ PREMIUM (ОНОВЛЕНО) --- */
+.badge-premium {
+    background: var(--premium-emerald) !important;
+    color: #ffffff !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.65rem;
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(20, 77, 23, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-premium::before {
+    content: "\F30B"; /* bi-gem або би-crown */
+    font-family: "bootstrap-icons";
+    font-size: 0.8rem;
+}

@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lexora — Редагування курсу</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/teacher-guard.js"></script>
+  <style>
+    /* --- БАЗОВІ КОЛЬОРИ ТА ФОН (ТВІЙ ОРИГІНАЛ) --- */
+    :root {
+      --primary-color: #1f8d28; /* Основний зелений Lexora */
+      --secondary-color: #388E3C;
+      --heading-color: #1b5e20;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f1f8e9; /* Твій оригінальний фон */
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; /* Збільшено шрифт для кращої читабельності */
+    }
+    main {
+      flex: 1 0 auto;
+      margin-top: 130px;
+      padding-bottom: 50px;
+    }
+    .footer-custom { background-color: #cce8cd; flex-shrink: 0; }
+
+    /* --- ЦЕНТРАЛЬНА НАВІГАЦІЯ (PILLS ЗАМІСТЬ TABS) --- */
+    .nav-pills {
+        background-color: #fff;
+        padding: 5px;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        border: 1px solid rgba(0, 0, 0, 0.08); /* Спокійна нейтральна сіра рамка */
+        display: inline-flex;
+    }
+    .nav-pills .nav-link {
+        border-radius: 50px;
+        color: #6c757d !important;
+        font-weight: 600 !important;
+        padding: 12px 30px !important;
+        transition: all 0.3s ease;
+    }
+    .nav-pills .nav-link:hover {
+        background-color: #f1f8e9; /* Ледь помітний зеленуватий фон при наведенні */
+        color: #1b5e20 !important;
+    }
+    .nav-pills .nav-link.active {
+        background-color: #1B5E20 !important; /* Глибокий, спокійний темно-зелений колір */
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25);
+    }
+
+    /* --- КАРТКИ КОНТЕНТУ --- */
+    .edit-card {
+      background: #fff; border: 1px solid rgba(31, 141, 40, 0.1);
+      border-radius: 20px; padding: 35px; box-shadow: 0 8px 25px rgba(0,0,0,0.03);
+    }
+
+    /* --- АКОРДЕОН ТА ЗАВДАННЯ --- */
+    .custom-accordion .accordion-item {
+        border: 1px solid rgba(31, 141, 40, 0.1) !important;
+        border-radius: 16px !important;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .custom-accordion .accordion-button {
+        font-size: 1.1rem;
+        border-radius: 16px !important;
+    }
+    .custom-accordion .accordion-button:not(.collapsed) {
+        background-color: #f1f8e9 !important; 
+        color: var(--primary-color) !important; 
+        box-shadow: none;
+    }
+    .custom-accordion .accordion-button::after { margin-left: auto; }
+    
+    .task-icon-circle {
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; flex-shrink: 0;
+    }
+    
+    /* Робимо вкладений акордеон візуально легшим */
+    [id^="tasksAccordion-"] .accordion-button::after {
+        width: 1rem; height: 1rem; background-size: 1rem;
+    }
+    [id^="tasksAccordion-"] .accordion-item {
+        border-color: #e9ecef !important;
+    }
+    .border-dashed { border: 2px dashed #cce8cd !important; }
+    .shadow-xs { box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+    /* Стилі для карток варіантів (Multiple Choice) */
+    .option-row { cursor: pointer; transition: all 0.2s ease-in-out; }
+    .option-row:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05) !important;
+    }
+    .transition-all { transition: all 0.3s ease; }
+    .italic { font-style: italic; }
+
+    /* ПЕРЕВИЗНАЧЕННЯ СИНІХ КОЛЬОРІВ БУТСТРАПУ НА ЗЕЛЕНІ (ДЛЯ ІНЛАЙН РЕДАКТОРА) */
+    .text-primary { color: var(--primary-color) !important; }
+    .bg-primary { background-color: var(--primary-color) !important; }
+    .border-primary { border-color: var(--primary-color) !important; }
+    .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+    }
+
+    .form-check-input:focus {
+        border-color: rgba(31, 141, 40, 0.5) !important; 
+        box-shadow: 0 0 0 0.25rem rgba(31, 141, 40, 0.25) !important;
+    }
+
+    /* Стилі для вкладеного акордеона із завданнями */
+    .custom-accordion-sm .accordion-button {
+        box-shadow: none !important;
+    }
+    .custom-accordion-sm .accordion-button:not(.collapsed) {
+        background-color: #f8f9fa !important;
+        color: var(--heading-color) !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+    .custom-accordion-sm .accordion-button::after {
+        transform: scale(0.8);
+    }
+  </style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<main class="container">
+  
+  <div class="d-flex justify-content-center mb-5">
+    <ul class="nav nav-pills" id="courseTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="content-tab" data-bs-toggle="pill" data-bs-target="#content-pane" type="button" role="tab">
+              <i class="bi bi-journal-richtext me-2"></i>Контент
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="settings-tab" data-bs-toggle="pill" data-bs-target="#settings-pane" type="button" role="tab">
+              <i class="bi bi-gear me-2"></i>Налаштування
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="students-tab" data-bs-toggle="pill" data-bs-target="#students-pane" type="button" role="tab">
+              <i class="bi bi-people me-2"></i>Студенти
+          </button>
+        </li>
+      </ul>
+  </div>
+
+  <div class="tab-content" id="courseTabsContent">
+    
+    <div class="tab-pane fade show active" id="content-pane" role="tabpanel">
+        <div class="edit-card mb-4 border-0 shadow-sm p-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start mb-4 gap-3">
+                <div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle mb-2 px-2 py-1">
+                        <i class="bi bi-pencil-square me-1"></i> Режим редагування
+                    </span>
+                    <h1 class="fw-bolder mb-0" id="displayCourseTitle" style="font-size: 2.2rem; color: var(--heading-color);">Завантаження...</h1>
+                </div>
+                <button onclick="notifyStudentsAboutUpdate()" class="btn btn-lexora shadow-sm rounded-pill px-4">
+                    <i class="bi bi-megaphone-fill me-2"></i> Сповістити студентів про зміни
+                </button>
+            </div>
+
+            <div id="courseBannerContainer" class="mb-4 d-flex align-items-center justify-content-center" style="display: none; height: 300px; background: transparent;">
+                <img id="displayCourseImage" src="" style="max-width: 100%; max-height: 100%; object-fit: contain; mix-blend-mode: multiply;">
+            </div>
+
+            <div class="position-relative">
+                <div id="courseDescContainer" class="text-muted fs-5 pb-3" style="max-height: 12em; overflow: hidden; transition: all 0.4s ease-in-out;">
+                    <p class="mb-0" id="displayCourseDesc" style="line-height: 1.6; white-space: pre-wrap;"></p>
+                </div>
+                <div id="descGradient" class="position-absolute bottom-0 w-100" style="height: 50px; background: linear-gradient(transparent, #ffffff); display: none; pointer-events: none;"></div>
+            </div>
+
+            <button id="toggleDescBtn" class="btn btn-link btn-sm text-success p-0 mt-2 text-decoration-none fw-bold fs-6" style="display: none;" onclick="toggleCourseDescription()">
+                Читати далі <i class="bi bi-chevron-down"></i>
+            </button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+            <h3 class="fw-bold m-0" style="color: var(--heading-color);">
+                <i class="bi bi-layers-half me-2"></i>Структура курсу
+            </h3>
+            <button class="btn btn-success rounded-pill fw-bold shadow-sm px-4 py-2" onclick="toggleInlineSectionForm()" id="toggleSectionFormBtn">
+                <i class="bi bi-plus-lg me-1"></i> Додати секцію
+            </button>
+        </div>
+
+        <div id="inlineSectionFormContainer" class="edit-card mb-5 border-0 shadow-lg p-0 overflow-hidden" style="display: none; border-radius: 24px;">
+            <div class="p-4 border-bottom bg-success bg-opacity-10 d-flex justify-content-between align-items-center">
+                <h4 class="fw-bold text-success mb-0">
+                    <i class="me-2"></i> Створення нової секції
+                </h4>
+                <button type="button" class="btn-close" onclick="toggleInlineSectionForm()"></button>
+            </div>
+
+            <form id="inlineSectionForm" class="p-4 p-md-5">
+                <input type="hidden" id="inlineSectionId">
+                
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <label class="form-label fw-bold fs-6 ms-1">Назва секції</label>
+                        <input type="text" class="form-control bg-light border-0 py-3 px-4 fs-5" id="inlineSectionTitle" required placeholder="Наприклад: Grammar Basics: Present Simple" style="border-radius: 15px;">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold fs-6 ms-1">Опис секції та теорія</label>
+                        <textarea class="form-control bg-light border-0 py-3 px-4 fs-6" id="inlineSectionDesc" rows="4" placeholder="Введіть теоретичний матеріал або опис секції..." style="border-radius: 15px;"></textarea>
+                    </div>
+                </div>
+                
+                <div class="p-4 border border-success-subtle rounded-4 bg-white mb-4 shadow-sm">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success text-white rounded-3 p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-image fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0 text-dark">Зображення секції</h5>
+                    </div>
+                    
+                    <input type="hidden" id="inlineSectionImage">
+                    
+                    <div class="row align-items-center">
+                        <div class="col-lg-12">
+                            <p class="text-muted small mb-3">Додайте зображення, яке найкраще ілюструє тему цієї секції (JPG, PNG).</p>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="file" id="sectionImageFile" class="form-control bg-light border-0" accept="image/*" style="max-width: 350px; border-radius: 10px;">
+                                <button type="button" class="btn btn-secondary fw-bold px-4 rounded-3 shadow-sm" onclick="uploadSectionImageInline()" style="white-space: nowrap;">Завантажити</button>
+                                <button type="button" id="deleteSectionImageBtn" class="btn btn-outline-danger fw-bold px-3 rounded-3" style="display: none; align-items: center;" onclick="removeSectionImageInline()">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 text-center mt-4">
+                            <img id="inlineSectionImagePreview" src="" class="shadow-sm border border-light" style="max-height: 150px; display: none; border-radius: 15px; object-fit: cover; margin: 0 auto;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3 pt-4 border-top">
+                    <button type="button" class="btn btn-light fw-bold px-4 py-3 rounded-pill" onclick="toggleInlineSectionForm()">Скасувати</button>
+                    <button type="submit" class="btn btn-success fw-bold px-5 py-3 rounded-pill shadow-sm" id="inlineSectionSubmitBtn">
+                        <i class="me-2"></i> Створити секцію
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="sectionsAccordion" class="accordion custom-accordion"></div>
+    </div>
+
+    <div class="tab-pane fade" id="settings-pane" role="tabpanel">
+    <div class="edit-card">
+        <h3 class="fw-bold mb-4 text-success"><i class="bi bi-sliders me-2"></i>Основна інформація</h3>
+        
+        <form id="courseSettingsForm">
+            <div class="mb-4">
+                <label class="form-label fw-bold ms-1">Назва курсу</label>
+                <input type="text" class="form-control bg-light border-0 py-3 px-4 fs-5" id="editCourseTitle" style="border-radius: 15px;">
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold ms-1">Опис курсу</label>
+                <textarea class="form-control bg-light border-0 py-3 px-4 fs-6" id="editCourseDesc" rows="5" style="border-radius: 15px;"></textarea>
+            </div>
+            
+            <div class="p-4 border border-success-subtle rounded-4 bg-white mb-5 shadow-sm">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-success text-white rounded-3 p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-image fs-5"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0 text-success fs-6">Обкладинка курсу</h6>
+                </div>
+                
+                <input type="hidden" id="editCourseImage">
+                
+                <div class="row align-items-center">
+                    <div class="col-lg-7">
+                        <div class="d-flex flex-wrap gap-2">
+                            <input type="file" id="courseImageFile" class="form-control bg-light border-0" accept="image/*" style="max-width: 350px; border-radius: 10px;">
+                            <button type="button" class="btn btn-secondary fw-bold px-4 rounded-3" onclick="uploadCourseCover()">Завантажити</button>
+                            <button type="button" id="deleteCourseImageBtn" class="btn btn-outline-danger fw-bold px-3 rounded-3" style="display: none;" onclick="removeCourseCover()">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 text-center mt-3 mt-lg-0">
+                        <img id="courseImagePreview" src="" alt="Обкладинка" class="shadow-sm border border-light" style="max-height: 180px; display: none; border-radius: 15px; object-fit: cover; margin: 0 auto;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border border-success-subtle rounded-4 bg-white mb-5 shadow-sm">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-success text-white rounded-3 p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-cash-stack fs-5"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0 text-success fs-6">Вартість навчання</h6>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label small text-muted ms-1">Встановіть ціну (₴)</label>
+                        <div class="input-group mb-2">
+                            <span class="input-group-text bg-light border-success-subtle text-success fw-bold" style="border-radius: 12px 0 0 12px;">₴</span>
+                            <input type="number" id="editCoursePrice" class="form-control border-success-subtle py-2" placeholder="0" min="0" step="10" style="border-radius: 0 12px 12px 0;">
+                        </div>
+                        <div id="priceError" class="text-danger extra-small fw-bold d-none">
+                            <i class="bi bi-exclamation-circle me-1"></i> Ціна має бути або 0, або не менше 70 ₴
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-4 bg-light border border-success border-opacity-10">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small text-muted">Комісія сервісу (25%):</span>
+                                <span id="displayFee" class="small fw-bold text-danger">0 ₴</span>
+                            </div>
+                            <div class="d-flex justify-content-between pt-2 border-top">
+                                <span class="fw-bold text-dark">Ви отримаєте:</span>
+                                <span id="displayNet" class="fw-bold text-success" style="font-size: 1.1rem;">0 ₴</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5 p-4 border border-success-subtle rounded-4 bg-light bg-opacity-50 shadow-sm">
+                <label class="form-label fw-bold text-success mb-3 fs-5">
+                    <i class="bi bi-eye me-2"></i>Видимість курсу
+                </label>
+                <div class="form-check form-switch fs-4 mb-0 d-flex align-items-center">
+                    <input class="form-check-input mt-0 me-3" type="checkbox" id="publicToggle" style="cursor: pointer; transform: scale(1.1);">
+                    <label class="form-check-label mb-0 fw-bold" for="publicToggle" id="publicToggleLabel" style="font-size: 1.1rem; cursor: pointer;">
+                        Приватний (Чернетка)
+                    </label>
+                </div>
+                <p class="text-muted mt-2 mb-0 small">Якщо увімкнено — курс з'явиться в загальному каталозі.</p>
+            </div>
+
+            <div class="">
+                <div class="p-4 border border-danger border-opacity-25 rounded-4 bg-white shadow-sm position-relative overflow-hidden">
+                    <div class="position-absolute start-0 top-0 bottom-0 bg-danger" style="width: 4px; opacity: 0.5;"></div>
+                    
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <div>
+                            <h5 class="fw-bold mb-1">Видалити цей курс</h5>
+                            <p class="text-muted small mb-0">Ця дія є незворотною. Всі матеріали та прогрес студентів буде видалено назавжди.</p>
+                        </div>
+                        <button type="button" onclick="deleteFullCourse()" class="btn btn-outline-danger rounded-pill px-4 fw-bold shadow-none transition-all">
+                            <i class="bi bi-trash3 me-2"></i> Видалити назавжди
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold px-5 shadow-sm w-100 py-3">
+                    <i class="bi bi-check2-circle me-2"></i> Зберегти всі налаштування
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <div class="tab-pane fade" id="students-pane" role="tabpanel">
+      <div class="edit-card">
+          <h3 class="fw-bold mb-4 text-success"><i class="bi bi-person-plus me-2"></i>Керування доступом</h3>
+          
+          <div class="p-4 bg-light rounded-4 border border-success-subtle mb-5">
+              <h6 class="fw-bold mb-3">Запросити студента на курс</h6>
+              <div class="row g-2 mb-3">
+                  <div class="col-md-8">
+                      <input type="email" id="inviteEmail" class="form-control border-0 shadow-sm py-3 h-100" placeholder="Введіть email студента..." style="border-radius: 12px;">
+                  </div>
+                  <div class="col-md-4">
+                      <button onclick="sendInvitation()" class="btn btn-success fw-bold w-100 shadow-sm py-3 h-100" style="border-radius: 12px;">
+                          <i class="bi"></i> Надіслати запит
+                      </button>
+                  </div>
+              </div>
+              <textarea id="inviteMessage" class="form-control border-0 shadow-sm p-3" rows="3" placeholder="Додайте персональне повідомлення..." style="border-radius: 12px;">Привіт! 👋 Запрошую тебе на свій курс на платформі Lexora. Попереду багато цікавого контенту, інтерактивних завдань та живої практики. Приєднуйся, і почнемо прокачувати твою англійську разом!</textarea>
+              <p class="text-muted small mt-2 mb-0"><i class="bi bi-info-circle me-1"></i>Студент побачить це повідомлення у своєму кабінеті разом із запрошенням.</p>
+          </div>
+
+          <div class="row g-4">
+              <div class="col-md-6">
+                  <h5 class="fw-bold mb-3" style="color: var(--heading-color);">
+                      Очікують відповіді 
+                      <span id="pendingCount" class="badge bg-warning text-dark ms-1 rounded-pill">0</span>
+                  </h5>
+                  <div id="pendingInvitesList" class="list-group shadow-sm border border-warning-subtle rounded-4 overflow-hidden">
+                      <div class="p-4 text-center text-muted bg-light">
+                          <i class="bi bi-inbox fs-3 d-block mb-2 text-warning"></i>
+                          Немає надісланих запрошень
+                      </div>
+                  </div>
+              </div>
+
+              
+              <div class="col-md-6">
+                  <h5 class="fw-bold mb-3" style="color: var(--heading-color);">
+                      Ваші студенти по запрошенню
+                      <span id="studentsCount" class="badge bg-success ms-1 rounded-pill">0</span>
+                    </h5>
+                    <div id="activeStudentsList" class="list-group shadow-sm border border-success-subtle rounded-4 overflow-hidden">
+                        <div class="p-4 text-center text-muted bg-light">
+                            <i class="bi bi-people fs-3 d-block mb-2 text-success"></i>
+                            Студентів поки немає
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5" id="rejectedBlock" style="display: none;">
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="fw-bold mb-0" style="color: var(--heading-color);">
+                            Відхилені запити 
+                        </h5>
+                        <span id="rejectedCount" class="badge bg-danger ms-2 rounded-pill" style="font-size: 0.85rem;">0</span>
+                    </div>
+
+                    <div id="rejectedInvitesList" class="list-group border-0">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="studentDetailsArea" class="mt-5" style="display: none;">
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-info-circle-fill text-success fs-4 me-2"></i>
+                <h5 class="fw-bold mb-0" style="color: var(--heading-color);">Детальна інформація та моніторинг</h5>
+            </div>
+            
+            <div id="studentDetailsContent">
+                </div>
+        </div>
+        <div class="mt-5 pt-4 border-top">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                <h5 class="fw-bold mb-0" style="color: #1b5e20;">
+                    <i class="bi bi-people-fill me-2 text-success"></i>Усі студенти на курсі 
+                    <span id="totalEnrolledCount" class="badge bg-success ms-2 rounded-pill">0</span>
+                </h5>
+                
+                <div class="input-group " style="max-width: 350px;">
+                    <span class="input-group-text bg-white border-end-0" style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" id="searchEnrolledInput" class="form-control border-start-0 ps-0" placeholder="Пошук за ім'ям чи email..." style="border-top-right-radius: 50px; border-bottom-right-radius: 50px; box-shadow: none;">
+                </div>
+            </div>
+
+            <div id="enrolledStudentsList" class="list-group shadow-sm border border-success-subtle rounded-4 overflow-hidden">
+                <div class="p-4 text-center text-muted bg-light">Завантаження студентів...</div>
+            </div>
+        </div>
+                
+    </div>
+
+
+  </div>
+</main>
+
+<div class="modal fade" id="notifyStudentsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 text-center">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-megaphone-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Сповістити студентів?</h5>
+                <p class="text-muted small mb-4">Надіслати всім підписаним студентам автоматичний email про оновлення курсу?</p>
+                
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold border shadow-none flex-grow-1" data-bs-dismiss="modal">Ні</button>
+                    <button type="button" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm flex-grow-1" id="btnConfirmNotify" onclick="executeNotifyStudents()">Так, надіслати</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer-custom py-4">
+  <div class="container text-center">
+    <h5 class="mb-3 fw-bold" style="color: var(--heading-color);">Звʼяжіться з нами</h5>
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+      <a href="tel:+380951011590" class="contact-item text-decoration-none text-muted"><i class="bi bi-telephone-fill text-success"></i> +380951011590</a>
+      <a href="mailto:lexoraengcourses@gmail.com" class="contact-item text-decoration-none text-muted"><i class="bi bi-envelope-fill text-success"></i> lexoraengcourses@gmail.com</a>
+      <span class="contact-item text-muted"><i class="bi bi-geo-alt-fill text-success"></i> м. Львів, вул. Наукова 30</span>
+    </div>
+    <hr class="my-3 opacity-25" style="border-color: var(--secondary-color);">
+    <p class="mt-3 mb-0 small text-muted">&copy; 2026 Lexora. Всі права захищені.</p>
+  </div>
+</footer>
+
+<div class="modal fade" id="makePrivateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 text-center">
+                <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-eye-slash-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Зробити приватним?</h5>
+                <p class="text-muted small mb-4">Курс зникне із загального каталогу. Тільки студенти з прямим доступом зможуть його бачити.</p>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-3 fw-bold flex-grow-1 border" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="button" class="btn btn-dark rounded-pill px-3 fw-bold flex-grow-1 shadow-sm" onclick="confirmMakePrivate()">Так, сховати</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="requestPublishModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 p-md-5 text-center">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                    <i class="bi bi-send-check-fill fs-1"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">Опублікувати курс?</h4>
+                <p class="text-muted mb-4">Щоб зробити курс публічним, ми надішлемо запит адміністратору на перевірку контенту.</p>
+                
+                <div class="alert alert-success border-0 rounded-4 py-3 mb-4 small text-start">
+                    <i class="bi bi-info-circle-fill me-2"></i> Переконайтеся, що всі секції заповнені та містять завдання.
+                </div>
+
+                <div class="d-flex gap-3 justify-content-center">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold border" data-bs-dismiss="modal">Я ще допрацюю</button>
+                    <button type="button" id="btnConfirmPublish" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" onclick="confirmRequestPublish()">Надіслати запит</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCourseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 p-md-5 text-center">
+                <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                    <i class="bi bi-exclamation-octagon-fill fs-1"></i>
+                </div>
+                
+                <h3 class="fw-bold text-dark mb-2">Видалити цей курс?</h3>
+                <p class="text-muted mb-4">Ця дія є <b>незворотною</b>. Ви видалите всі матеріали, завдання та прогрес усіх студентів на цьому курсі.</p>
+                
+                <div class="bg-light p-3 rounded-4 mb-4 text-start border">
+                    <label class="form-label small fw-bold text-uppercase text-muted mb-2">Підтвердіть видалення</label>
+                    <p class="extra-small text-secondary mb-2">Введіть назву курсу або слово <span class="text-danger fw-bold">ВИДАЛИТИ</span> нижче:</p>
+                    <input type="text" id="deleteConfirmInput" class="form-control border-danger border-opacity-25 py-2" placeholder="Введіть назву тут..." style="border-radius: 12px;">
+                </div>
+
+                <div class="d-flex gap-3">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold border flex-grow-1" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="button" id="btnFinalDelete" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm flex-grow-1" onclick="executePermanentDelete()">
+                        Я розумію, видалити
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteSuccessModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 p-md-5 text-center">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                    <i class="bi bi-check-all fs-1"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">Видалено!</h4>
+                <p class="text-muted small mb-4">Курс та всі пов'язані дані були безповоротно видалені з системи Lexora.</p>
+                
+                <button type="button" class="btn btn-success rounded-pill w-100 fw-bold py-2 shadow-sm" onclick="window.location.href='teacher.html'">
+                    Повернутись до курсів
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="inviteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 p-md-5 text-center">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                    <i class="bi bi-person-plus-fill fs-1"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">Надіслати запрошення?</h4>
+                <p class="text-muted mb-4">Студент <b id="displayInviteEmail" class="text-dark"></b> отримає email із вашим повідомленням та посиланням на курс.</p>
+                
+                <div class="d-flex gap-3">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold border flex-grow-1" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="button" id="btnExecuteInvite" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm flex-grow-1" onclick="executeSendInvitation()">
+                        Так, запросити
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="inviteSuccessModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 p-md-5 text-center">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 60px; height: 60px;">
+                    <i class="bi bi-send-check fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Запит надіслано!</h5>
+                <p class="text-muted small mb-4">Запрошення успішно відправлено. Студент з'явиться у списку очікування.</p>
+                <button type="button" class="btn btn-success rounded-pill w-100 fw-bold shadow-sm" data-bs-dismiss="modal">Чудово</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="lexoraAlertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 text-center">
+                <div id="alertModalIconBox" class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i id="alertModalIcon" class="bi fs-2"></i>
+                </div>
+                
+                <h5 id="alertModalTitle" class="fw-bold text-dark mb-2"></h5>
+                <p id="alertModalText" class="text-muted small mb-4"></p>
+                
+                <button type="button" class="btn btn-success rounded-pill w-100 fw-bold py-2 shadow-sm" data-bs-dismiss="modal" id="alertModalBtn">
+                    Зрозуміло
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteRejectedInviteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 text-center">
+                <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-trash3-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Очистити запис?</h5>
+                <p class="text-muted small mb-4">Цей запит буде видалено зі списку назавжди.</p>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-3 fw-bold flex-grow-1 border" data-bs-dismiss="modal">Назад</button>
+                    <button type="button" class="btn btn-danger rounded-pill px-3 fw-bold flex-grow-1 shadow-sm" id="confirmDeleteInviteBtn">Видалити</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-success">
+                    <i class="bi bi-chat-left-dots-fill me-2"></i>Зворотній зв'язок
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-4">
+                <div class="p-3 bg-light rounded-4 mb-3 border border-success-subtle border-opacity-50">
+                    <div class="small text-muted text-uppercase fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Завдання:</div>
+                    <div id="feedbackTaskTitle" class="fw-bold text-dark mb-2 small"></div>
+                    
+                    <div class="small text-muted text-uppercase fw-bold mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">Відповідь студента:</div>
+                    <div id="feedbackStudentAnswer" class="text-secondary small fst-italic" style="word-break: break-all;"></div>
+                </div>
+
+                <label class="form-label small fw-bold text-success ms-1">Ваш коментар:</label>
+                <textarea id="feedbackCommentInput" class="form-control border-0 bg-light py-3 px-3" rows="4" placeholder="Напишіть, що ви думаєте про цю відповідь..." style="border-radius: 15px; resize: none;"></textarea>
+            </div>
+            <div class="modal-footer border-0 pb-4 px-4">
+                <button type="button" class="btn btn-light rounded-pill px-4 fw-bold border flex-grow-1" data-bs-dismiss="modal">Скасувати</button>
+                <button type="button" id="btnExecuteFeedback" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm flex-grow-1">
+                    Надіслати
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://localhost:5002/socket.io/socket.io.js"></script>
+<script src="../js/teacher-navbar-loader.js"></script>
+<script src="../js/teacher-notifications.js"></script>
+
+<script>
+  function logout() {
+    localStorage.clear(); 
+    window.location.href = '../index.html'; 
+  }
+</script>
+<script src="../js/teacher-course-edit.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lexora Pay — Безпечна оплата</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+
+    .checkout-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .checkout-header {
+      background: #1b5e20;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .checkout-header h5 {
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .price-badge {
+      background: #e8f5e9;
+      color: #1b5e20;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #636e72;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .form-control {
+      border-radius: 12px;
+      padding: 14px 18px;
+      border: 2px solid #f1f3f5;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: #1b5e20;
+      box-shadow: none;
+      background-color: #fcfdfc;
+    }
+
+    #processingOverlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255,255,255,0.96);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .success-icon {
+      font-size: 5rem;
+      color: #198754;
+      display: none;
+    }
+
+    .btn-pay {
+      background: #1b5e20;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+
+    .btn-pay:hover {
+      background: #2e7d32;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(27, 94, 32, 0.2);
+    }
+    
+    /* Стиль для збереженої картки */
+    .saved-card-box {
+      border: 2px solid #1b5e20;
+      background-color: #e8f5e9;
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+<div class="checkout-card">
+    <div id="processingOverlay">
+        <div id="paymentSpinner" class="spinner-border text-success mb-3" style="width: 3.5rem; height: 3.5rem; border-width: 0.35em;"></div>
+        <i id="paymentSuccessIcon" class="bi bi-check-circle-fill success-icon mb-3"></i>
+        <h4 id="processingTitle" class="fw-bold text-dark">Обробка запиту...</h4>
+        <p id="processingText" class="text-muted">Будь ласка, не закривайте сторінку</p>
+    </div>
+
+    <div class="checkout-header">
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+            <i class="bi bi-shield-check-fill fs-4"></i>
+            <h5 class="mb-0">LEXORA SECURE PAY</h5>
+        </div>
+        <small class="opacity-75">Платіжний шлюз</small>
+    </div>
+    
+    <div class="p-4 p-md-5">
+        <div class="mb-4">
+            <label class="form-label">Курс до оплати</label>
+            <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-4 border">
+                <div class="text-truncate me-2">
+                    <span id="courseName" class="fw-bold text-dark">Завантаження...</span>
+                </div>
+                <div id="coursePrice" class="price-badge text-nowrap shadow-sm">0 ₴</div>
+            </div>
+        </div>
+
+        <form id="paymentForm">
+            
+            <!-- БЛОК ЗБЕРЕЖЕНОЇ КАРТКИ (Прихований за замовчуванням) -->
+            <div id="savedCardBlock" class="d-none mb-4">
+                <div class="saved-card-box shadow-sm">
+                    <span class="badge bg-success position-absolute top-0 start-50 translate-middle px-3 py-2 rounded-pill shadow-sm">Збережена картка</span>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-credit-card-fill fs-2 text-success"></i>
+                            <div>
+                                <div class="fw-bold font-monospace text-dark fs-5" id="savedCardMaskDisplay">**** 0000</div>
+                                <div class="small text-muted">Токенізовано</div>
+                            </div>
+                        </div>
+                        <div style="width: 85px;">
+                            <input type="password" class="form-control text-center fw-bold text-success border-success" id="savedCardCvv" placeholder="CVV" maxlength="3" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <button type="button" class="btn btn-link text-success text-decoration-none fw-bold small" onclick="switchToManual()">
+                        <i class="bi bi-plus-circle me-1"></i> Використати іншу картку
+                    </button>
+                </div>
+            </div>
+
+            <!-- БЛОК РУЧНОГО ВВЕДЕННЯ (Показується, якщо немає збереженої) -->
+            <div id="manualCardBlock">
+                <div class="mb-3">
+                    <label class="form-label">Номер картки</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-credit-card-2-front"></i></span>
+                        <input type="text" class="form-control border-start-0 ps-0 font-monospace" id="cardNum" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-7">
+                        <label class="form-label">Термін дії</label>
+                        <input type="text" class="form-control font-monospace text-center" id="cardExp" placeholder="ММ / РР" maxlength="5" required>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label">CVC / CVV</label>
+                        <input type="password" class="form-control font-monospace text-center" id="cardCvc" placeholder="***" maxlength="3" required oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-pay w-100 shadow-sm text-white mt-2">
+                <i class="bi bi-lock-fill me-1"></i> Підтвердити оплату
+            </button>
+
+            <div class="text-center mt-4">
+                <a href="student.html" class="text-decoration-none text-muted small fw-bold">
+                    <i class="bi bi-arrow-left me-1"></i> Скасувати та повернутися
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:5002/api';
+    const params = new URLSearchParams(window.location.search);
+    const courseId = params.get('courseId');
+    const courseTitle = params.get('title') || "Курс Lexora";
+    const price = params.get('price') || "0";
+
+    document.getElementById('courseName').innerText = courseTitle;
+    document.getElementById('coursePrice').innerText = price + " ₴";
+
+    let isUsingSavedCard = false;
+
+    // --- 1. ПЕРЕВІРКА ЗБЕРЕЖЕНОЇ КАРТКИ ПРИ ЗАВАНТАЖЕННІ ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const userDataString = localStorage.getItem('user');
+        if (userDataString) {
+            const user = JSON.parse(userDataString);
+            if (user.savedCardMask) {
+                // Ховаємо звичайну форму, показуємо збережену картку
+                document.getElementById('savedCardMaskDisplay').innerText = user.savedCardMask;
+                document.getElementById('savedCardBlock').classList.remove('d-none');
+                document.getElementById('manualCardBlock').classList.add('d-none');
+                isUsingSavedCard = true;
+
+                // Знімаємо обов'язковість з ручних полів, додаємо до CVV збереженої
+                document.getElementById('cardNum').removeAttribute('required');
+                document.getElementById('cardExp').removeAttribute('required');
+                document.getElementById('cardCvc').removeAttribute('required');
+                document.getElementById('savedCardCvv').setAttribute('required', 'true');
+            }
+        }
+    });
+
+    // Перемикач на ручне введення
+    window.switchToManual = function() {
+        isUsingSavedCard = false;
+        document.getElementById('savedCardBlock').classList.add('d-none');
+        document.getElementById('manualCardBlock').classList.remove('d-none');
+
+        document.getElementById('cardNum').setAttribute('required', 'true');
+        document.getElementById('cardExp').setAttribute('required', 'true');
+        document.getElementById('cardCvc').setAttribute('required', 'true');
+        document.getElementById('savedCardCvv').removeAttribute('required');
+    };
+
+
+    // --- 2. АЛГОРИТМ ЛУНА ---
+    function validateLuhn(number) {
+        let n = number.replace(/\s+/g, '');
+        if (!/^\d{13,19}$/.test(n)) return false;
+        let sum = 0;
+        for (let i = 0; i < n.length; i++) {
+            let intVal = parseInt(n.substr(i, 1));
+            if (i % 2 == n.length % 2) {
+                intVal *= 2;
+                if (intVal > 9) intVal -= 9;
+            }
+            sum += intVal;
+        }
+        return (sum % 10) == 0;
+    }
+
+    // --- 3. ЛОГІКА ОПЛАТИ ---
+    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // ВАЛІДАЦІЯ
+        if (!isUsingSavedCard) {
+            const cardNum = document.getElementById('cardNum').value;
+            const cardExp = document.getElementById('cardExp').value;
+            
+            if (!validateLuhn(cardNum)) {
+                alert("❌ Невалідний номер карти. Перевірте цифри.");
+                return;
+            }
+            if (!/^\d{2}\/\d{2}$/.test(cardExp)) {
+                alert("❌ Невірний формат терміну дії (ММ/РР).");
+                return;
+            }
+        } else {
+            const savedCvv = document.getElementById('savedCardCvv').value;
+            if (savedCvv.length !== 3) {
+                alert("❌ Введіть 3 цифри CVV коду для підтвердження оплати!");
+                return;
+            }
+        }
+
+        // АНІМАЦІЯ ОПЛАТИ
+        const overlay = document.getElementById('processingOverlay');
+        const title = document.getElementById('processingTitle');
+        const text = document.getElementById('processingText');
+        const spinner = document.getElementById('paymentSpinner');
+
+        overlay.style.display = 'flex';
+
+        const steps = [
+            { t: isUsingSavedCard ? "Перевірка токена..." : "З'єднання з еквайрингом...", s: 1000 },
+            { t: "Перевірка лімітів та балансу...", s: 1200 },
+            { t: "Шифрування даних (SSL 256-bit)...", s: 800 },
+            { t: "Очікування відповіді від банку-емітента...", s: 1500 }
+        ];
+
+        let currentStep = 0;
+        const runSteps = () => {
+            if (currentStep < steps.length) {
+                title.innerText = steps[currentStep].t;
+                setTimeout(() => {
+                    currentStep++;
+                    runSteps();
+                }, steps[currentStep].s);
+            } else {
+                completePayment();
+            }
+        };
+
+        runSteps();
+
+        async function completePayment() {
+            try {
+                const response = await fetch(`${API_URL}/payments/buy/${courseId}`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getSafeToken()}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    spinner.style.display = 'none';
+                    document.getElementById('paymentSuccessIcon').style.display = 'block';
+                    title.innerText = "Платіж підтверджено!";
+                    text.innerHTML = `Транзакція <b>#LX-${Math.floor(Math.random()*900000 + 100000)}</b> успішна.<br>Курс додано до вашого кабінету.`;
+                    setTimeout(() => window.location.href = 'student.html', 3000);
+                } else {
+                    throw new Error(data.error || "Банк відхилив операцію");
+                }
+            } catch (err) {
+                overlay.style.display = 'none';
+                alert("Помилка: " + err.message);
+            }
+        }
+    });
+
+    // Форматування номера карти (пробіли кожні 4 цифри)
+    document.getElementById('cardNum').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, ''); // Тільки цифри
+        value = value.replace(/(.{4})/g, '$1 ').trim(); // Додаємо пробіл кожні 4 цифри
+        e.target.value = value;
+    });
+
+    // Маска для терміну дії ММ/РР
+    document.getElementById('cardExp').addEventListener('input', function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length >= 2) v = v.substring(0, 2) + '/' + v.substring(2, 4);
+        e.target.value = v;
+    });
+
+    // Функція токена
+    function getSafeToken() {
+        let t = localStorage.getItem('token') || "";
+        t = t.replace(/['"\n\r\t]/g, '').trim();
+        if (!t) {
+            const u = localStorage.getItem('user');
+            if (u) { try { t = JSON.parse(u).token || ""; } catch(e){} }
+        }
+        return t.replace(/[^A-Za-z0-9\-._~+/]/g, '');
+    }
+</script>
+
+</body>
+</html>

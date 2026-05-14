@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lexora — Кабінет студента</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/student.css">
+
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<main class="container py-4">
+  
+  <section class="welcome-banner mb-5 text-start">
+    <div class="position-relative z-1">
+      <h1 class="display-5 fw-bold mb-2" style="color: var(--heading-color);">Привіт, <span id="studentMainName" class="text-success">Student</span>!</h1>
+      <p class="lead text-muted mb-0 fs-5">Готовий продовжити своє навчання? Обирай курс та вдосконалюй англійську вже сьогодні.</p>
+    </div>
+  </section>
+
+  <section id="invitationsSection" style="display: none;" class="mb-5">
+    <div class="d-flex align-items-center mb-3">
+      <i class="bi bi-envelope-exclamation-fill text-success fs-3 me-2"></i>
+      <h3 class="fw-bold mb-0" style="color: var(--heading-color);">Нові запрошення</h3>
+    </div>
+    <div id="invitationsContainer">
+        </div>
+  </section>
+
+  <section class="row g-4 mb-5 text-center">
+    <div class="col-md-6">
+      <div class="card stat-card p-4" onclick="window.location.href='my-courses.html'" style="cursor: pointer;">
+        <i class="bi bi-journal-text bg-icon"></i>
+        <h2 class="display-5 fw-bold mb-0" style="color: var(--primary-color);" id="countActive">0</h2>
+        <p class="text-muted small text-uppercase fw-bold mb-0 mt-1">Курси в процесі</p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card stat-card p-4" onclick="window.location.href='monitoring.html'" style="cursor: pointer;">
+        <i class="bi bi-check2-all bg-icon"></i>
+        <h2 class="display-5 fw-bold mb-0" style="color: var(--secondary-color);" id="countCompleted">0</h2>
+        <p class="text-muted small text-uppercase fw-bold mb-0 mt-1">Загалом пройдено завдань</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="monitoring-banner flex-column flex-md-row text-center text-md-start" onclick="window.location.href='monitoring.html'">
+    <div class="mb-3 mb-md-0">
+      <h4 class="fw-bold mb-1" style="color: var(--heading-color);">Прогрес під контролем!</h4>
+      <p class="mb-0 text-muted">Подивись детальну аналітику своїх навичок та помилок.</p>
+    </div>
+    <a href="monitoring.html" class="btn btn-lexora shadow-sm">Відкрити Аналітику</a>
+  </div>
+
+  <section id="messagesSection" class="mb-5" style="display: none;">
+    <div class="d-flex align-items-center mb-4">
+      <i class="bi bi-inboxes-fill text-success fs-3 me-2"></i>
+      <h3 class="fw-bold mb-0" style="color: var(--heading-color);">Центр повідомлень</h3>
+    </div>
+    
+    <div class="row g-4" id="studentDialogsContainer">
+        </div>
+  </section>
+
+  <section class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+      <i class="bi bi-play-circle-fill text-success fs-3 me-2"></i>
+      <h3 class="fw-bold mb-0" style="color: var(--heading-color);">Мої активні курси</h3>
+    </div>
+    <div class="row g-4" id="myCourses"></div>
+  </section>
+
+  <section class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+      <i class="bi bi-collection-fill text-success fs-3 me-2"></i>
+      <h3 class="fw-bold mb-0" style="color: var(--heading-color);">Каталог доступних курсів</h3>
+    </div>
+    <div class="row g-4" id="allCourses"></div>
+  </section>
+
+  <section class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+      <i class="bi bi-patch-check-fill text-success fs-3 me-2"></i>
+      <h3 class="fw-bold mb-0" style="color: var(--heading-color);">Завершені курси</h3>
+    </div>
+    <div class="row g-4" id="completedCourses"></div>
+  </section>
+</main>
+
+<footer class="footer-custom py-4">
+  <div class="container text-center">
+    <h5 class="mb-3 fw-bold" style="color: var(--heading-color);">Звʼяжіться з нами</h5>
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+      <a href="tel:+380951011590" class="contact-item"><i class="bi bi-telephone-fill"></i> +380951011590</a>
+      <a href="mailto:lexoraengcourses@gmail.com" class="contact-item"><i class="bi bi-envelope-fill"></i> lexoraengcourses@gmail.com</a>
+      <span class="contact-item"><i class="bi bi-geo-alt-fill"></i> м. Львів, вул. Наукова 30</span>
+    </div>
+    <hr class="my-3 opacity-25" style="border-color: var(--secondary-color);">
+    <p class="mt-3 mb-0 small">&copy; 2026 Lexora. Всі права захищені.</p>
+  </div>
+</footer>
+
+<div class="modal fade" id="lexoraAlertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 text-center">
+                <div id="alertModalIconBox" class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i id="alertModalIcon" class="bi fs-2"></i>
+                </div>
+                <h5 id="alertModalTitle" class="fw-bold text-dark mb-2"></h5>
+                <p id="alertModalText" class="text-muted small mb-4"></p>
+                <button type="button" class="btn btn-success rounded-pill w-100 fw-bold py-2 shadow-sm" data-bs-dismiss="modal" id="alertModalBtn">Зрозуміло</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmActionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 text-center">
+                <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-question-circle-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2" id="confirmTitle">Ви впевнені?</h5>
+                <p class="text-muted small mb-4" id="confirmText"></p>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-3 fw-bold flex-grow-1 border" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="button" class="btn btn-success rounded-pill px-3 fw-bold flex-grow-1 shadow-sm" id="confirmActionBtn">Підтвердити</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+
+<script src="../js/student-navbar-loader.js"></script>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="../js/student-notifications.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="../js/student.js"></script>
+
+</body>
+</html>

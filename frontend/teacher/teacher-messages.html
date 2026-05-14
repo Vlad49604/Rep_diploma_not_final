@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lexora — Повідомлення</title>
+  
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/teacher-messages.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/teacher-guard.js"></script>
+
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<div class="container-fluid messenger-container">
+  
+  <div class="col-md-4 dialogs-list d-flex flex-column">
+    
+    <div class="p-4 border-bottom bg-white flex-shrink-0">
+      <h4 class="fw-800 text-dark mb-4">Повідомлення</h4>
+      
+      <div class="d-flex flex-column gap-2 mb-3">
+        <select class="form-select border-success-subtle bg-light rounded-pill shadow-none small" id="courseFilter">
+          <option value="all">Всі курси</option>
+        </select>
+        <select class="form-select border-success-subtle bg-light rounded-pill d-none" id="sectionFilter">
+          <option value="all">Всі секції</option>
+        </select>
+        <select class="form-select border-success-subtle bg-light rounded-pill d-none" id="taskFilter">
+          <option value="all">Всі завдання</option>
+        </select>
+      </div>
+
+      <div class="search-bar border shadow-none" style="padding: 8px 20px !important;">
+          <i class="bi bi-search text-success"></i>
+          <input type="text" id="searchUser" class="form-control border-0 bg-transparent shadow-none" placeholder="Пошук студента...">
+      </div>
+    </div>
+
+    <div class="overflow-auto flex-grow-1" id="dialogsContainer">
+        </div>
+
+    <div class="mt-auto border-top bg-light p-2 flex-shrink-0">
+      <div id="supportChatBtn" class="p-3 text-dark d-flex align-items-center gap-3 bg-white border shadow-sm cursor-pointer" style="transition: 0.3s; border-radius: 15px;">
+        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 45px; height: 45px;">
+          <i class="bi bi-headset fs-5"></i>
+        </div>
+        <div class="flex-grow-1">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-success" style="font-size: 0.9rem;">Служба підтримки</span>
+                <span class="badge bg-success rounded-pill" style="font-size: 0.6rem;">Admin</span>
+            </div>
+            <div class="extra-small text-muted" style="font-size: 0.75rem;">Технічна допомога</div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+  <div class="col-md-8 chat-area position-relative d-flex flex-column" id="mainChatArea">
+    
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white flex-shrink-0" id="chatHeader" style="height: 75px;">
+      <div class="d-flex align-items-center gap-3 text-muted">
+        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+          <i class="bi bi-chat-dots text-success"></i>
+        </div>
+        <h5 class="mb-0 fw-bold text-dark">Оберіть діалог</h5>
+      </div>
+    </div>
+
+    <div class="px-4 py-2 border-bottom d-flex align-items-center gap-2 d-none" id="personalChatFilters" style="background-color: #fcfcfc;">
+    
+    <div class="d-flex align-items-center gap-2">
+        <select class="form-select form-select-sm w-auto rounded-pill border-0 shadow-sm" id="pcourseFilter">
+            <option value="all">Всі курси</option>
+        </select>
+        <select class="form-select form-select-sm w-auto rounded-pill border-0 shadow-sm d-none" id="psectionFilter"></select>
+        <select class="form-select form-select-sm w-auto rounded-pill border-0 shadow-sm d-none" id="ptaskFilter"></select>
+    </div>
+
+    <button class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold shadow-sm ms-auto d-none" id="btnToggleContext" onclick="toggleContextVisibility()">
+        <i class="bi bi-eye-slash-fill"></i> 
+    </button>
+
+    <div class="position-relative" style="max-width: 200px;">
+        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" style="font-size: 0.8rem;"></i>
+        <input type="text" id="searchMessage" class="form-control form-control-sm rounded-pill shadow-sm border-0 ps-5 bg-white shadow-none" placeholder="Пошук...">
+    </div>
+</div>
+
+    <div class="flex-grow-1 position-relative overflow-hidden d-flex flex-column">
+        
+        <div class="messages-wrapper flex-grow-1 overflow-auto" id="messagesArea">
+            <div class="text-center text-muted mt-5 opacity-50">
+                <i class="bi bi-chat-square-dots display-1 d-block mb-3" style="color:#595a5b"></i>
+                <p>Оберіть діалог з меню зліва для початку спілкування</p>
+            </div>
+        </div>
+
+        <div id="ticketDashboardArea" class="d-none flex-column h-100 w-100 bg-white position-absolute top-0 start-0" style="z-index: 20;">
+            
+            <div id="ticketListView" class="p-4 flex-grow-1 overflow-auto">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold text-success mb-0"><i class="bi bi-ticket-perforated me-2"></i>Мої запити</h4>
+                <button class="btn btn-success rounded-pill fw-bold" onclick="showNewTicketForm()">+ Створити</button>
+              </div>
+              <div id="ticketsContainer" class="d-flex flex-column gap-3"></div>
+            </div>
+
+            <div id="ticketCreateView" class="p-4 flex-grow-1 overflow-auto d-none bg-light">
+              <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 600px;">
+                <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center">
+                  <h5 class="fw-bold mb-0">Новий запит</h5>
+                  <button class="btn-close" onclick="showTicketList()"></button>
+                </div>
+                <div class="card-body p-4">
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Тема звернення</label>
+                    <select id="newTicketSubject" class="form-select border-success-subtle" onchange="toggleTeacherTicketFields()">
+                      <option value="Запит на публікацію курсу">Запит на публікацію курсу</option>
+                      <option value="Технічна допомога">🛠 Технічна допомога</option>
+                      <option value="Фінансові питання">💰 Фінансові питання</option>
+                      <option value="Інше">💬 Інше</option>
+                    </select>
+                  </div>
+                  
+                  <div class="mb-3" id="teacherCourseSelectWrapper">
+                      <label class="form-label fw-bold text-success">Оберіть курс для модерації</label>
+                      <select id="newTicketCourse" class="form-select border-success-subtle"></select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label fw-bold">Детальний опис</label>
+                    <textarea id="newTicketMessage" class="form-control border-success-subtle" rows="4" placeholder="Опишіть ваше питання..."></textarea>
+                  </div>
+                  <button class="btn btn-success w-100 rounded-pill py-2" onclick="submitNewTicket()">Відправити запит</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="p-3 bg-white border-top flex-shrink-0" id="chatInputContainer">
+  
+  <div id="filePreview" class="d-none px-3 py-2 bg-light border-bottom d-flex justify-content-between align-items-center border-top mb-2 rounded">
+        <span id="fileNameDisplay" class="text-success small fw-bold"></span>
+        <i class="bi bi-x-lg text-danger cursor-pointer" id="removeFileBtn" title="Прибрати фото"></i>
+    </div>
+
+    <div id="replyPreviewBar" class="d-none px-3 py-2 bg-success bg-opacity-10 border-start border-3 border-success mb-2 d-flex justify-content-between align-items-center rounded shadow-sm">
+    <div class="text-truncate small">
+        <i class="bi bi-reply-fill text-success me-1"></i> 
+        <span class="text-success fw-bold">Відповідь на:</span> 
+        <i id="replyPreviewText" class="fw-bold text-dark fst-normal"></i>
+    </div>
+    <i class="bi bi-x-lg cursor-pointer text-muted hover-text-danger" onclick="cancelReply()" style="transition: 0.2s;"></i>
+</div>
+
+<div class="d-flex align-items-end">
+    <input type="file" id="ticketFile" class="d-none" accept="image/*">
+    
+    <button class="btn btn-light border-0 text-success d-none mb-1" id="attachBtn" type="button" style="border-radius: 10px;">
+        <i class="bi bi-paperclip fs-4"></i>
+    </button>
+
+    <textarea class="form-control custom-textarea shadow-none" rows="1" placeholder="Напишіть повідомлення..." id="chatInput"></textarea>
+    
+    <button class="btn btn-send-lexora" id="sendBtn">
+        <i class="bi bi-send-fill"></i>
+    </button>
+</div>
+  </div>
+
+  </div>
+</div>
+
+<!-- Модалка підтвердження видалення Lexora Style -->
+<div class="modal fade" id="deleteMessageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <!-- Червона іконка в ніжно-червоному колі -->
+        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-trash3 fs-2"></i>
+        </div>
+        
+        <h5 class="fw-bold text-dark mb-2">Видалити повідомлення?</h5>
+        <p class="text-muted small mb-4">Цю дію неможливо скасувати. Повідомлення зникне у обох співрозмовників.</p>
+        
+        <div class="d-flex gap-2 justify-content-center">
+          <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Скасувати</button>
+          <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm" id="confirmDeleteMsgBtn" onclick="executeMessageDelete()">Видалити</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка підтвердження вирішення питання (Lexora Style) -->
+<div class="modal fade" id="closeTicketModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <!-- Зелена іконка успіху -->
+        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-check2-circle fs-2"></i>
+        </div>
+        
+        <h5 class="fw-bold text-dark mb-2">Питання вирішене?</h5>
+        <p class="text-muted small mb-4">Позначити це питання як вирішене? Щоб перевідкрити запит напишіть в чат.</p>
+        
+        <div class="d-flex gap-2 justify-content-center">
+          <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Назад</button>
+          <button type="button" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" id="confirmCloseTicketBtn" onclick="executeTicketClose()">Вирішено</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://localhost:5002/socket.io/socket.io.js"></script>
+
+<script src="../js/teacher-navbar-loader.js"></script>
+<script src="../js/teacher-notifications.js"></script>
+<script src="../js/teacher-messages.js"></script>
+
+<script>
+  function logout() {
+    localStorage.clear(); 
+    window.location.href = '../index.html'; 
+  }
+</script>
+</body>
+</html>

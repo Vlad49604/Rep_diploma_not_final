@@ -1,0 +1,291 @@
+/* --- СТИЛІ ТІЛЬКИ ДЛЯ КАБІНЕТУ СТУДЕНТА --- */
+
+main {
+    margin-top: 100px; /* Великий відступ, щоб контент не ховався під навбар */
+    padding-bottom: 50px;
+}
+
+/* ВІТАЛЬНИЙ БАНЕР */
+.welcome-banner {
+    background: #fff;
+    border-radius: 20px;
+    padding: 35px 40px;
+    box-shadow: 0 10px 30px rgba(27, 94, 32, 0.05);
+    border: 1px solid rgba(27, 94, 32, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-banner::after {
+    content: '🎓';
+    position: absolute;
+    right: 20px;
+    bottom: -15px;
+    font-size: 100px;
+    opacity: 0.1;
+    transform: rotate(15deg);
+}
+
+/* СТАТИСТИЧНІ КАРТКИ */
+.stat-card {
+    background-color: #fff;
+    border: 1px solid rgba(27, 94, 32, 0.1);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(27, 94, 32, 0.1);
+}
+
+.stat-card i.bg-icon {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    font-size: 5rem;
+    color: var(--primary-color);
+    opacity: 0.05;
+    transition: all 0.3s ease;
+}
+
+/* БАНЕР МОНІТОРИНГУ */
+.monitoring-banner {
+    background: linear-gradient(135deg, #ffffff, #f8fcf9);
+    border-radius: 20px;
+    padding: 25px 30px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(27, 94, 32, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(27, 94, 32, 0.05);
+}
+
+.monitoring-banner:hover {
+    box-shadow: 0 15px 35px rgba(27, 94, 32, 0.12);
+    transform: translateY(-3px);
+}
+
+/* КАРТКИ КУРСІВ У ВНУТРІШНЬОМУ КАБІНЕТІ */
+.course-card {
+    background: #fff;
+    border: 1px solid rgba(27, 94, 32, 0.1) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    height: 100%;
+}
+
+.course-card:hover {
+    box-shadow: 0 15px 35px rgba(27, 94, 32, 0.12) !important;
+    transform: translateY(-8px);
+}
+
+/* Специфічне налаштування кнопок у кабінеті */
+.btn-lexora {
+    background-color: var(--primary-color);
+    color: #fff !important;
+    border-radius: 12px;
+    font-weight: 700;
+    padding: 10px 24px;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+}
+
+.btn-lexora:hover {
+    background-color: var(--secondary-color);
+    transform: scale(1.02);
+}
+
+/* Додаткові відступи для заголовків секцій */
+section h3 {
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.nav-link.active-link {
+    border-bottom: 3px solid #1f8d28;
+    padding-bottom: 2px !important;
+}
+
+/* Уніфікована панель пошуку */
+.search-bar {
+    background: #ffffff !important;
+    border: 2px solid transparent !important;
+    border-radius: 50px !important; /* Жорстко фіксуємо форму пігулки */
+    padding: 10px 25px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease !important;
+    display: flex;
+    align-items: center;
+}
+
+/* Ефект при кліку на поле пошуку */
+.search-bar:focus-within {
+    border-color: #4CAF50 !important;
+    box-shadow: 0 10px 25px rgba(46, 125, 50, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+/* Прибираємо стандартні рамки інпуту всередині */
+.search-bar input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-left: 10px;
+}
+
+.search-bar i {
+    color: #4CAF50;
+    font-size: 1.2rem;
+}
+
+/* Маленька крапка для нових сповіщень */
+.dot-notification {
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+/* Прибираємо синій контур Bootstrap */
+#notificationsList .dropdown-item:active, 
+#notificationsList .dropdown-item:focus {
+    background-color: #f1f8e9 !important;
+    color: inherit !important;
+}
+
+/* --- Верхня панель фільтрів чату --- */
+.chat-filter-select {
+    background-color: #ffffff;
+    color: #495057;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.chat-filter-select:hover {
+    background-color: #f0fdf4; /* Легкий зелений відтінок при наведенні */
+}
+.chat-filter-select:focus,
+#searchMessage:focus {
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15) !important; /* Фірмовий фокус Lexora */
+    outline: none;
+}
+
+/* --- Нижня панель вводу повідомлень --- */
+.chat-input-wrapper {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-top: 1px solid #e9ecef;
+}
+.custom-textarea {
+    border-radius: 24px !important;
+    border: 1px solid #dee2e6;
+    padding: 12px 20px;
+    resize: none;
+    background-color: #ffffff;
+    line-height: 1.5;
+    transition: border-color 0.2s ease;
+}
+.custom-textarea:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.1) !important;
+}
+
+/* Кнопка відправки */
+.btn-send-lexora {
+    background-color: #198754;
+    color: white;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(25, 135, 84, 0.2);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.btn-send-lexora:hover {
+    background-color: #146c43;
+    transform: scale(1.05);
+    color: white;
+}
+.btn-send-lexora i {
+    font-size: 1.2rem;
+    margin-left: -2px; /* Легке вирівнювання іконки по центру */
+}
+
+/* Стилі для згортання контексту */
+.context-body-collapse {
+    transition: max-height 0.3s ease-out, opacity 0.2s ease;
+    overflow: hidden;
+    max-height: 500px; /* Достатньо для будь-якого опису */
+    opacity: 1;
+}
+
+.context-body-collapse.minimized {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0 !important;
+}
+
+.toggle-context-btn {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.toggle-context-btn.rotated {
+    transform: rotate(-180deg);
+}
+
+/* Клас для приховування нутрощів банера */
+.sticky-context-wrapper.minimized .context-body-collapse {
+    display: none !important;
+}
+
+/* Поворот іконки */
+.toggle-context-btn {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+.sticky-context-wrapper.minimized .toggle-context-btn {
+    transform: rotate(-180deg);
+}
+
+.invitation-banner {
+        background: linear-gradient(135deg, #fff 0%, #fff9e6 100%);
+        border: 2px solid #ffecb3 !important;
+        position: relative;
+        overflow: hidden;
+    }
+    .invitation-banner::after {
+        content: 'NEW';
+        position: absolute;
+        top: 15px;
+        right: -25px;
+        background: #ffc107;
+        color: #000;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 5px 30px;
+        transform: rotate(45deg);
+    }
+    .teacher-quote {
+        background: rgba(255, 255, 255, 0.6);
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 12px;
+        font-style: italic;
+    }

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexora Admin — Розсилка</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <style>
+        body { background-color: #f1f8e9 !important; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+        .mailing-card {
+            background: #ffffff !important;
+            border-radius: 24px !important;
+            border: 1px solid rgba(31, 141, 40, 0.1) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+            padding: 40px !important;
+        }
+        @media (min-width: 768px) { .mailing-card { padding: 50px !important; } }
+        
+        .form-select, .form-control {
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            border-radius: 50px !important;
+            padding: 10px 20px !important;
+            border: 1.5px solid #e9ecef !important;
+            background-color: #f8f9fa !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: rgb(68, 191, 105) !important;
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.08) !important;
+            background-color: #fff !important;
+        }
+        textarea.form-control { border-radius: 20px !important; }
+        
+        .recipients-list {
+            background: #fafdfa;
+            border-radius: 15px;
+            border: 1.5px solid #edf2ed;
+            padding: 15px;
+            min-height: 80px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .admin-badge {
+            background: #f1f8e9;
+            color: #2E7D32;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #e0eadd;
+            margin: 4px;
+        }
+        .upload-zone {
+            border: 2px dashed #d1dbd1;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .upload-zone:hover { border-color: #44BF69; background: #f8fcf9; }
+        
+        h3.fw-800 { font-weight: 800 !important; letter-spacing: -0.5px; }
+        #imagePreview { max-height: 180px; border-radius: 12px; object-fit: cover; }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<div id="admin-navbar-placeholder"></div>
+
+<main class="container flex-grow-1" style="margin-top: 110px; max-width: 850px; padding-bottom: 60px;">
+    
+    <div class="mb-4">
+    </div>
+
+    <div class="mailing-card">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px;">
+                <i class="bi bi-megaphone fs-5"></i>
+            </div>
+            <h3 class="fw-800 text-dark mb-0">Нова розсилка</h3>
+        </div>
+
+        <form id="mailingForm">
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="small fw-bold text-muted ms-2 mb-1">Категорія</label>
+                    <select class="form-select" id="recipientRole">
+                        <option value="all">Всі користувачі</option>
+                        <option value="student">Тільки Студенти</option>
+                        <option value="teacher">Тільки Викладачі</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="small fw-bold text-muted ms-2 mb-1">Умова</label>
+                    <select class="form-select" id="recipientCondition">
+                        <option value="none">Без додаткових умов</option>
+                        <option value="inactive">Неактивні користувачі</option>
+                        <option value="active_tickets">З відкритими тікетами</option>
+                        <option value="dead_souls">Жодного входу</option>
+                        <option value="new_leads">Нові (останні 48 годин)</option>
+                        <option value="no_avatar">Без фото профілю</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="daysInputWrapper" class="mb-3 d-none px-3 py-2 bg-light rounded-4">
+                <label class="small fw-bold">Днів без входу:</label>
+                <input type="number" class="form-control d-inline-block ms-2" style="width: 80px; border-radius: 10px !important;" id="filterDays" value="7" min="1">
+            </div>
+
+            <button type="button" class="btn btn-outline-success rounded-pill w-100 fw-bold mb-4" onclick="loadGroup()" id="loadStudentsBtn">
+                Завантажити список отримувачів
+            </button>
+
+            <div class="row g-2 mb-3">
+                <div class="col-md-8 position-relative">
+                    <input type="text" class="form-control" id="manualEmail" placeholder="Ім'я або email..." autocomplete="off">
+                    <ul class="dropdown-menu w-100 shadow border-0 mt-1" id="emailSuggestions" style="display: none; max-height: 200px; overflow-y: auto; z-index: 1050; border-radius: 15px;"></ul>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-light border w-100 fw-bold rounded-pill" onclick="addManualEmail()">
+                        Додати одного
+                    </button>
+                </div>
+            </div>
+            
+            <div class="recipients-list mb-2" id="recipientsList">
+                <div class="text-center text-muted small py-3" id="emptyRecipientsMsg">Список порожній. Завантажте базу або додайте вручну.</div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4 px-2 border-bottom pb-3">
+                <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none fw-bold d-none p-0" id="clearAllBtn" onclick="showClearConfirm()">
+                    Очистити все
+                </button>
+                <div class="ms-auto small fw-bold text-dark">Обрано: <span id="recipientsCount" class="text-success">0</span></div>
+            </div>
+
+            <div class="mb-3">
+                <input type="text" class="form-control" id="mailSubject" placeholder="Тема повідомлення..." required>
+            </div>
+
+            <div class="mb-3">
+                <div class="upload-zone" id="uploadBox" onclick="document.getElementById('mailImage').click()">
+                    <i class="bi bi-image text-success fs-4"></i>
+                    <span class="ms-2 small fw-bold text-muted">Додати банер до листа</span>
+                    <input type="file" id="mailImage" class="d-none" accept="image/*">
+                    <input type="hidden" id="uploadedImageUrl">
+                </div>
+                <div class="text-center mt-2">
+                    <img id="imagePreview" src="" class="img-fluid d-none rounded-3 shadow-sm mb-2">
+                    <button type="button" id="removeImageBtn" class="btn btn-sm text-danger fw-bold d-none" onclick="removeImage()">Видалити фото</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <textarea class="form-control" id="mailBody" rows="6" placeholder="Текст розсилки..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold shadow-sm" id="sendBtn">
+                Надіслати розсилку
+            </button>
+        </form>
+    </div>
+</main>
+
+<div class="modal fade" id="confirmClearModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <h5 class="fw-bold mb-3">Очистити список?</h5>
+        <p class="text-muted small mb-4">Ви впевнені, що хочете видалити всіх отримувачів?</p>
+        <div class="d-flex gap-2 justify-content-center">
+          <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Ні</button>
+          <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm" onclick="executeClearAll()" data-bs-dismiss="modal">Очистити</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="successMailingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-check2-circle fs-1"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-2">Готово!</h5>
+        <p class="text-muted small mb-4">Лист успішно надіслано <b id="successSentCount" class="text-success fs-6">0</b> користувачам.</p>
+        <a href="admin.html" class="btn btn-success rounded-pill fw-bold shadow-sm w-100">На головну</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer-custom py-4 mt-auto">
+  <div class="container text-center">
+    <p class="mb-0 fw-bold opacity-75">&copy; 2026 Lexora Admin. Всі права захищені.</p>
+  </div>
+</footer>
+
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100; margin-bottom: 80px;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://localhost:5002/socket.io/socket.io.js"></script>
+<script src="../js/admin-navbar-loader.js"></script>
+<script src="../js/admin-notifications.js"></script>
+<script src="../js/admin-notifications.js"></script>
+
+<script>
+  const API_URL = 'http://localhost:5002/api';
+  let recipients = new Map();
+
+  // Функція для красивих тостів
+  function showAdminToast(title, message, isError = false) {
+    const container = document.getElementById('toastContainer');
+    const toastEl = document.createElement('div');
+    const icon = isError ? '<i class="bi bi-x-circle-fill text-danger me-2"></i>' : '<i class="bi bi-check-circle-fill text-success me-2"></i>';
+    toastEl.className = 'toast border-0 mb-2 shadow-sm rounded-3';
+    toastEl.innerHTML = `
+      <div class="toast-header border-0 bg-white pt-2 px-3">${icon}<strong class="me-auto">${title}</strong><button type="button" class="btn-close" data-bs-dismiss="toast"></button></div>
+      <div class="toast-body bg-white text-muted px-3 pb-3 pt-0 small">${message}</div>
+    `;
+    container.appendChild(toastEl);
+    const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+    toast.show();
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+  }
+
+  function renderRecipients() {
+    const list = document.getElementById('recipientsList');
+    const msg = document.getElementById('emptyRecipientsMsg');
+    const count = document.getElementById('recipientsCount');
+    const clearBtn = document.getElementById('clearAllBtn');
+    
+    list.innerHTML = '';
+    count.innerText = recipients.size;
+
+    if (recipients.size === 0) {
+      list.appendChild(msg);
+      msg.style.display = 'block';
+      clearBtn.classList.add('d-none');
+      return;
+    }
+
+    clearBtn.classList.remove('d-none');
+
+    recipients.forEach((name, email) => {
+      const badge = document.createElement('span');
+      badge.className = 'admin-badge';
+      badge.innerHTML = `
+        <span>${name}</span> <span class="mx-1 opacity-50">|</span> <span class="fw-normal small">${email}</span>
+        <i class="bi bi-x-circle-fill ms-2 opacity-50 hover-danger" style="cursor:pointer" onclick="removeEmail('${email}')"></i>
+      `;
+      list.appendChild(badge);
+    });
+  }
+
+  window.removeEmail = function(email) { recipients.delete(email); renderRecipients(); };
+  window.showClearConfirm = function() { new bootstrap.Modal(document.getElementById('confirmClearModal')).show(); };
+  window.executeClearAll = function() {
+    recipients.clear(); renderRecipients();
+    bootstrap.Modal.getInstance(document.getElementById('confirmClearModal')).hide();
+    showAdminToast('Очищено', 'Список отримувачів порожній');
+  };
+
+  document.getElementById('recipientCondition').addEventListener('change', function(e) {
+    document.getElementById('daysInputWrapper').classList.toggle('d-none', e.target.value !== 'inactive');
+  });
+
+  window.loadGroup = async function() {
+    const role = document.getElementById('recipientRole').value;
+    const condition = document.getElementById('recipientCondition').value;
+    const days = document.getElementById('filterDays').value;
+    try {
+      const res = await fetch(`${API_URL}/admin/users?role=${role}&condition=${condition}&days=${days}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        if (data.users.length === 0) showAdminToast('Пусто', 'Користувачів не знайдено', true);
+        data.users.forEach(u => recipients.set(u.email, u.name || 'Користувач'));
+        renderRecipients();
+        showAdminToast('Готово', `Додано ${data.users.length} отримувачів`);
+      }
+    } catch (err) { console.error(err); }
+  };
+
+  // Пошук
+  const manualInput = document.getElementById('manualEmail');
+  const suggestBox = document.getElementById('emailSuggestions');
+
+  manualInput.addEventListener('input', async function() {
+    const q = this.value.trim();
+    if (q.length < 2) { suggestBox.style.display = 'none'; return; }
+    try {
+      const res = await fetch(`${API_URL}/admin/search-users?q=${q}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      suggestBox.innerHTML = '';
+      if (res.ok && data.users.length > 0) {
+        data.users.forEach(u => {
+          const li = document.createElement('li');
+          li.innerHTML = `<a class="dropdown-item py-2" href="#"><b>${u.name}</b> <br> <small class="text-muted">${u.email}</small></a>`;
+          li.onclick = () => { recipients.set(u.email, u.name); renderRecipients(); manualInput.value = ''; suggestBox.style.display = 'none'; };
+          suggestBox.appendChild(li);
+        });
+        suggestBox.style.display = 'block';
+      }
+    } catch (e) {}
+  });
+
+  window.addManualEmail = async function() {
+    const email = manualInput.value.trim();
+    if (!email.includes('@')) return;
+    try {
+      const res = await fetch(`${API_URL}/admin/search-users?q=${email}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      const exact = data.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      if (exact) { recipients.set(exact.email, exact.name); renderRecipients(); manualInput.value = ''; }
+      else { showAdminToast('Помилка', 'Користувача не знайдено', true); }
+    } catch (e) {}
+  };
+
+  // Фото
+  document.getElementById('mailImage').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    const formData = new FormData(); formData.append("image", file);
+    try {
+      const res = await fetch(`${API_URL}/image`, { method: "POST", body: formData });
+      const data = await res.json();
+      document.getElementById('uploadedImageUrl').value = data.url;
+      document.getElementById('imagePreview').src = data.url;
+      document.getElementById('imagePreview').classList.remove('d-none');
+      document.getElementById('removeImageBtn').classList.remove('d-none');
+      document.getElementById('uploadBox').classList.add('d-none');
+    } catch (e) {}
+  });
+
+  window.removeImage = function() {
+    document.getElementById('uploadedImageUrl').value = '';
+    document.getElementById('imagePreview').classList.add('d-none');
+    document.getElementById('uploadBox').classList.remove('d-none');
+    document.getElementById('removeImageBtn').classList.add('d-none');
+  };
+
+  // Відправка
+  document.getElementById('mailingForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (recipients.size === 0) return showAdminToast('Увага', 'Оберіть отримувачів', true);
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true; btn.innerText = 'Відправка...';
+    try {
+      const res = await fetch(`${API_URL}/admin/bulk-mail`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({
+          emails: Array.from(recipients.keys()),
+          subject: document.getElementById('mailSubject').value,
+          body: document.getElementById('mailBody').value,
+          imageUrl: document.getElementById('uploadedImageUrl').value
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById('successSentCount').innerText = data.sentCount || recipients.size;
+        new bootstrap.Modal(document.getElementById('successMailingModal')).show();
+      }
+    } catch (err) { btn.disabled = false; btn.innerText = 'Надіслати розсилку'; }
+  });
+</script>
+</body>
+</html>

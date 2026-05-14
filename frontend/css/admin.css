@@ -1,0 +1,131 @@
+/* --- ГЛОБАЛЬНІ ЗМІННІ (БРЕНДИНГ LEXORA) --- */
+:root {
+    --primary-color: #44BF69;      
+    --secondary-color: #2E7D32;    
+    --bg-color: #f1f8e9;           
+    --heading-color: #1B5E20;      
+    --footer-color: #cce8cd;       
+    --white: #ffffff;
+    --border-radius: 20px;
+    --navbar-height: 85px;
+    --notification-color: #ff5b5b; 
+    --notification-glow: rgba(255, 91, 91, 0.4);
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--heading-color);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+    margin-top: 100px;
+    padding-bottom: 50px;
+}
+
+/* --- НАВБАР --- */
+.navbar {
+    background-color: #E8F5E9;
+    height: var(--navbar-height);
+    position: fixed; 
+    top: 0; 
+    width: 100%; 
+    z-index: 1030;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+.navbar-brand .logo { height: 45px; width: auto; }
+.nav-link {
+    font-size: 1.1rem;
+    font-weight: 700 !important;
+    color: var(--heading-color) !important;
+    padding: 0.5rem 1.2rem !important;
+    transition: all 0.3s ease;
+}
+.nav-link:hover { color: var(--primary-color) !important; opacity: 0.8; }
+.nav-link.active-link { border-bottom: 3px solid #1B5E20; padding-bottom: 2px !important; }
+.badge-notification {
+    background-color: var(--notification-color) !important;
+    color: white !important;
+    box-shadow: 0 0 10px var(--notification-glow); 
+    font-weight: 800 !important;
+    font-size: 0.6rem !important;
+    padding: 0.35em 0.5em !important;
+}
+
+/* --- ФУТЕР --- */
+.footer-custom {
+    flex-shrink: 0;
+    background-color: var(--footer-color) !important;
+    color: var(--heading-color);
+    border-top: 1px solid rgba(27, 94, 32, 0.1);
+}
+
+/* --- БАНЕР --- */
+.welcome-banner {
+    background: #fff;
+    border-radius: var(--border-radius);
+    padding: 35px 40px;
+    box-shadow: 0 10px 30px rgba(27, 94, 32, 0.05);
+    border: 1px solid rgba(27, 94, 32, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+.welcome-banner::after {
+    content: '🛡️';
+    position: absolute;
+    right: 20px;
+    bottom: -15px;
+    font-size: 100px;
+    opacity: 0.1;
+    transform: rotate(15deg);
+}
+
+/* --- КАРТКИ (КОНСИСТЕНТНІСТЬ) --- */
+.crm-card {
+    background: var(--white);
+    border: 1px solid rgba(27, 94, 32, 0.1);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+.crm-card:hover {
+    border-color: rgba(68, 191, 105, 0.4);
+    box-shadow: 0 15px 35px rgba(27, 94, 32, 0.08);
+    transform: translateY(-5px);
+}
+
+/* --- ІКОНКИ В КАРТКАХ --- */
+.icon-wrapper-lg {
+    width: 70px; 
+    height: 70px; 
+    font-size: 2rem;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border-radius: 50%;
+}
+/* Кольорові теми для іконок (всі в зеленій гамі) */
+.icon-theme-light { background-color: var(--bg-color); color: var(--primary-color); }
+.icon-theme-medium { background-color: rgba(68, 191, 105, 0.15); color: var(--secondary-color); }
+.icon-theme-dark { background-color: var(--secondary-color); color: var(--white); }
+
+/* --- ГРАФІКИ --- */
+.chart-container {
+    position: relative; 
+    width: 100%;
+}
+.chart-lg { height: 300px; }
+.chart-md { height: 120px; }
+.chart-sm { height: 70px; width: 70px; }
+

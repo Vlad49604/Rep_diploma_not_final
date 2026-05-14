@@ -1,0 +1,232 @@
+/* --- ГЛОБАЛЬНІ ЗМІННІ (БРЕНДИНГ LEXORA) --- */
+:root {
+    --primary-color: #44BF69;      /* Яскравий зелений */
+    --secondary-color: #2E7D32;    /* Глибокий зелений */
+    --bg-color: #f1f8e9;           /* Ніжний фон */
+    --heading-color: #1B5E20;      /* Колір заголовків */
+    --footer-color: #cce8cd;       /* Твій колір футера */
+    --white: #ffffff;
+    --border-radius: 20px;
+    --navbar-height: 85px;
+    --notification-color: #ff5b5b; /* М'який червоно-кораловий */
+    --notification-glow: rgba(255, 91, 91, 0.4);
+}
+
+/* --- БАЗОВІ НАЛАШТУВАННЯ --- */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--navbar-height);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--heading-color);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    margin: 0;
+}
+
+/* --- НАВБАР (УНІФІКОВАНИЙ) --- */
+.navbar {
+    background-color: #E8F5E9;
+    height: var(--navbar-height);
+    position: fixed; 
+    top: 0; 
+    width: 100%; 
+    z-index: 1030;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.navbar-brand .logo {
+    height: 45px;
+    width: auto;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    font-weight: 700 !important;
+    color: var(--heading-color) !important;
+    padding: 0.5rem 1.2rem !important;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+    opacity: 0.8;
+}
+
+/* --- ГОЛОВНИЙ БАНЕР (LANDING) --- */
+.main-banner {
+    padding-top: var(--navbar-height);
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                url('../img/background.jpeg') no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    color: var(--white);
+}
+
+.banner-logo-circle {
+    border-radius: 50%;
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    background-color: #E8F5E9;
+    padding: 10px;
+    border: 4px solid var(--white);
+}
+
+/* Кнопка-стрілка вниз */
+.scroll-down {
+    position: absolute;
+    bottom: 40px;
+    font-size: 3rem;
+    color: var(--white);
+    transition: 0.3s;
+    animation: bounce 2s infinite;
+}
+
+.scroll-down:hover {
+    color: var(--primary-color);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-15px); }
+    60% { transform: translateY(-7px); }
+}
+
+/* --- КАРТКИ ТА КУРСИ --- */
+#courses h2 {
+    font-weight: 800;
+    color: var(--heading-color);
+}
+
+.course-item-img {
+    transition: transform 0.4s ease;
+}
+
+.row:hover .course-item-img {
+    transform: scale(1.03);
+}
+
+/* --- КНОПКИ (LEXORA STYLE) --- */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border: none !important;
+    border-radius: 12px;
+    padding: 12px 30px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(68, 191, 105, 0.3);
+}
+
+/* --- ФОРМИ ТА ПАРОЛІ --- */
+.password-container {
+    position: relative;
+}
+
+.password-container i {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+}
+
+#passwordRules li.valid { color: var(--primary-color); }
+#passwordRules li.invalid { color: #dc3545; }
+
+/* --- ФУТЕР (ТВІЙ КОЛІР) --- */
+.footer-custom {
+    background-color: var(--footer-color) !important;
+    color: var(--heading-color);
+    border-top: 1px solid rgba(27, 94, 32, 0.1);
+    padding: 40px 0;
+}
+
+.contact-item {
+    font-weight: 600;
+    color: var(--heading-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+}
+
+.contact-item:hover {
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+/* --- МОДАЛЬНІ ВІКНА --- */
+.modal-content {
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+}
+
+/* Стильна заглушка для курсів без фото */
+.course-fake-img {
+    height: 190px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #cce8cd 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0; /* Закруглення тільки зверху */
+}
+
+/* Велика літера назви курсу */
+.course-fake-img .course-letter {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+    opacity: 0.4;
+    z-index: 2;
+    text-transform: uppercase;
+}
+
+/* Фонова іконка книги для краси */
+.course-fake-img .bi-book-overlay {
+    position: absolute;
+    font-size: 8rem;
+    bottom: -20px;
+    right: -20px;
+    color: var(--primary-color);
+    opacity: 0.1;
+    transform: rotate(-15deg);
+}
+
+/* Новий стиль для бейджів-сповіщень */
+.badge-notification {
+    background-color: var(--notification-color) !important;
+    color: white !important;
+    box-shadow: 0 0 10px var(--notification-glow); /* Ефект м'якого світіння */
+    font-weight: 800 !important;
+    font-size: 0.6rem !important;
+    padding: 0.35em 0.5em !important;
+}
+
+/* Стиль для "порожнього" сповіщення (просто крапка) */
+.dot-notification {
+    width: 10px;
+    height: 10px;
+    background-color: var(--notification-color);
+    box-shadow: 0 0 8px var(--notification-glow);
+}
+

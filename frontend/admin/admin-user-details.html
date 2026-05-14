@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Досьє користувача — Lexora Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body { background-color: #f1f8e9; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .card { border-radius: 20px; border: 1px solid rgba(27,94,32,0.1); }
+        .danger-zone { border: 2px dashed #ffcdd2; background: #fffbfa; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top" style="height: 85px;">
+  <div class="container">
+    <a class="navbar-brand" href="admin.html"><img src="../img/logo.png" style="height: 40px;"></a>
+    <a href="admin-users.html" class="btn btn-outline-success rounded-pill fw-bold px-4">
+        <i class="bi bi-arrow-left me-2"></i> Назад до списку
+    </a>
+  </div>
+</nav>
+
+<div class="container mt-5 mb-5">
+    <div id="userDetailsContent">
+        <!-- JS: loadUserDetails() -->
+    </div>
+</div>
+
+<!-- МОДАЛКА БАНУ (ВИКЛИКАЄТЬСЯ З ЦІЄЇ СТОРІНКИ) -->
+<div class="modal fade" id="banModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow-lg">
+      <div class="modal-header bg-danger text-white border-0">
+        <h5 class="modal-title fw-bold"><i class="bi bi-shield-slash-fill me-2"></i> Блокування доступу</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Тривалість</label>
+            <select class="form-select rounded-3" id="banDuration">
+                <option value="1">1 день</option>
+                <option value="7">7 днів</option>
+                <option value="permanent">Назавжди</option>
+            </select>
+        </div>
+        <div class="mb-0">
+            <label class="form-label fw-bold">Причина</label>
+            <textarea class="form-control rounded-3" id="banReason" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Скасувати</button>
+        <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="executeBan()">Підтвердити бан</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛКА ДЕТАЛЕЙ ТЕСТУ -->
+<div class="modal fade" id="testDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-file-earmark-bar-graph me-2"></i> Деталі проходження: <span id="testModalCourseTitle" class="fw-normal">Курс</span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-light" id="testModalBody">
+                <!-- Сюди JS згенерує список відповідей -->
+            </div>
+            <div class="modal-footer border-0 bg-white">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛКА АКТИВНИХ КУРСІВ -->
+<div class="modal fade" id="studentCoursesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-warning text-dark border-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-journal-bookmark-fill me-2"></i> Активні курси студента</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 bg-light">
+                <div class="list-group list-group-flush" id="studentCoursesList">
+                    <!-- JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛКА ВІДКРИТИХ ТІКЕТІВ -->
+<div class="modal fade" id="studentTicketsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-headset me-2"></i> Відкриті тікети</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 bg-light">
+                <div class="list-group list-group-flush" id="studentTicketsList">
+                    <!-- JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛКА ВИДАЧІ КУРСУ -->
+<div class="modal fade" id="grantCourseModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow-lg">
+      <div class="modal-header bg-success text-white border-0">
+        <h5 class="modal-title fw-bold"><i class="bi bi-gift-fill me-2"></i> Видати доступ до курсу</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="text-muted small mb-3">Виберіть курс, щоб безкоштовно відкрити до нього доступ для цього користувача.</p>
+        <div class="mb-3">
+            <label class="form-label fw-bold">Оберіть курс</label>
+            <select class="form-select rounded-3" id="courseSelectForGrant">
+                <option value="">Завантаження курсів...</option>
+            </select>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Скасувати</button>
+        <button type="button" class="btn btn-success rounded-pill px-4 fw-bold" onclick="executeGrantCourse()">Відкрити доступ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Додай цей рядок перед твоїм скриптом -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/admin-user-details.js"></script>
+</body>
+</html>

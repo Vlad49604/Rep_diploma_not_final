@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фінанси — Lexora Admin</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/admin.css">
+  <script src="../js/admin-guard.js"></script>
+
+  <style>
+    /* --- ГЛОБАЛЬНИЙ СТИЛЬ LEXORA --- */
+    body { 
+        background-color: #f1f8e9 !important; 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        display: flex; 
+        flex-direction: column; 
+        min-height: 100vh; 
+    }
+    
+    main { margin-top: 130px; flex: 1; }
+
+    .fw-800 { font-weight: 800 !important; }
+
+    /* Вбивця синього кольору */
+    .text-primary { color: #1b5e20 !important; }
+    .btn-outline-primary { color: #1b5e20 !important; border-color: #1b5e20 !important; }
+    .btn-outline-primary:hover { background-color: #1b5e20 !important; color: #fff !important; }
+
+    /* Картки статистики */
+    .crm-card {
+        background: #ffffff;
+        border-radius: 24px;
+        border: 1px solid rgba(31, 141, 40, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        padding: 25px;
+        transition: transform 0.3s ease;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+
+    /* Іконки в кружечках */
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Таблиці */
+    .table-container { background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.02); }
+    .table thead th { 
+        background-color: #f8fcf9; 
+        color: #1b5e20; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        font-size: 0.75rem; 
+        border: none;
+        padding: 18px;
+    }
+    .table tbody td { padding: 18px; border-bottom: 1px solid #f8f8f8; font-weight: 600; color: #333; }
+
+    /* Вкладки */
+    .nav-tabs .nav-link { border: none; color: #888; font-weight: 700; padding: 12px 20px; }
+    .nav-tabs .nav-link.active { color: #1b5e20; border-bottom: 3px solid #44BF69 !important; background: transparent; }
+
+    /* Кастомна кнопка назад */
+    .btn-back {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.05);
+        color: #1b5e20;
+        font-weight: 700;
+        padding: 8px 20px;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+    .btn-back:hover { background: #f8fcf9; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transform: translateX(-3px); }
+
+    /* Фіксуємо висоту контейнера виплат, щоб нічого не "стрибало" */
+  /* --- СТИЛІ ДЛЯ ВИПЛАТ (surgical fix) --- */
+/* --- СТИЛІ ДЛЯ ВИПЛАТ (surgical fix) --- */
+/* --- СТИЛІ ДЛЯ ВИПЛАТ (БЕЗ СТРИБКІВ) --- */
+
+/* Вимикаємо будь-який рух (трансформацію) для великої картки у виплатах */
+#payoutsView .crm-card, 
+#payoutsView .table-container {
+    transform: none !important; 
+    transition: none !important;
+}
+
+/* Фіксуємо висоту, щоб блок не "пригав" при перемиканні порожніх вкладок */
+.payout-main-card {
+    min-height: 650px; 
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(31, 141, 40, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Кнопка назад (дизайн як в аналітиці) */
+.btn-back-container {
+    margin-bottom: 50px; /* Відстань від кнопки до контенту нижче */
+}
+
+/* Стилізація перемикачів (Tabs) у зелених тонах Lexora */
+#payoutTabs .nav-link {
+    border: none !important;
+    color: #888 !important;
+    font-weight: 700;
+    padding: 12px 25px;
+    background: transparent !important;
+}
+
+#payoutTabs .nav-link.active {
+    color: #1b5e20 !important;
+    border-bottom: 3px solid #44BF69 !important; /* Наш салатовий */
+}
+
+/* Зелена іконка гаманця */
+.wallet-circle {
+    background-color: rgba(68, 191, 105, 0.1);
+    color: #44BF69;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+  </style>
+</head>
+<body>
+
+<div id="admin-navbar-placeholder"></div>
+
+<main class="container mb-5">
+  
+  <div id="dashboardView">
+    <div class="d-flex align-items-center mb-5">
+        <div class="icon-circle bg-success bg-opacity-10 text-success me-3 shadow-sm">
+            <i class="bi bi-wallet2 fs-4"></i>
+        </div>
+        <h2 class="fw-800 mb-0 text-dark" style="color: #1b5e20;">Фінансовий моніторинг</h2>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-3">
+        <div class="crm-card stat-card h-100 d-flex flex-column">
+          <small class="text-uppercase fw-bold text-muted mb-2">Обіг (GMV)</small>
+          <h2 class="fw-800 text-dark mb-0" id="totalTurnover">...</h2>
+          <div class="mt-auto pt-3" style="height: 60px;">
+              <canvas id="gmvChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="crm-card stat-card h-100 text-white" style="background: linear-gradient(135deg, #44BF69 0%, #1b5e20 100%); border: none;">
+          <small class="text-uppercase fw-bold opacity-75 mb-2">Прибуток платформи</small>
+          <h2 class="fw-800 mb-0" id="totalNet">...</h2>
+          <i class="bi bi-bank position-absolute end-0 bottom-0 m-3 opacity-20" style="font-size: 3rem;"></i>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="crm-card stat-card h-100">
+          <small class="text-uppercase fw-bold text-success mb-2">Середній чек</small>
+          <h2 class="fw-800 text-dark mb-0" id="averageCheck">...</h2>
+          <i class="bi bi-cart-check position-absolute end-0 bottom-0 m-3 text-success opacity-10" style="font-size: 3rem;"></i>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="crm-card stat-card h-100 border-warning border-opacity-25" style="cursor: pointer;" onclick="showPayoutsView()">
+          <div class="d-flex justify-content-between align-items-start">
+              <div>
+                  <small class="text-uppercase fw-bold text-warning mb-2">Заборгованість</small>
+                  <h2 class="fw-800 text-dark mb-0" id="totalDebt">...</h2>
+              </div>
+              <i class="bi bi-arrow-right-circle-fill text-warning fs-4"></i>
+          </div>
+          <i class="bi bi-cash-coin position-absolute end-0 bottom-0 m-3 text-warning opacity-10" style="font-size: 3rem;"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-receipt me-2 text-success"></i>Останні транзакції</h5>
+        <div class="d-flex gap-2">
+            <select id="courseTypeFilter" class="form-select form-select-sm fw-bold border-light bg-light rounded-pill px-3" onchange="applyFilters()">
+                <option value="all">Всі курси</option>
+                <option value="system">Платформа</option>
+                <option value="teacher">Викладачі</option>
+            </select>
+            <button onclick="showAnalyticsView()" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3">Аналітика</button>
+            <button onclick="exportTransactionsCSV()" class="btn btn-sm btn-success text-white fw-bold rounded-pill px-3">Експорт</button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th class="ps-3">Дата</th>
+              <th>Студент</th>
+              <th>Курс</th>
+              <th>Сума</th>
+              <th class="text-success">Прибуток</th>
+              <th>Статус виплати</th> 
+            </tr>
+          </thead>
+          <tbody id="transactionsTable">
+            <tr><td colspan="6" class="text-center py-5 text-muted">Завантаження...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="payoutsView" class="d-none">
+    <div class="btn-back-container">
+        <button class="btn-back shadow-sm" onclick="showDashboardView()">
+            <i class="bi bi-arrow-left me-2"></i> Назад до транзакцій
+        </button>
+    </div>
+
+    <div class="d-flex align-items-center mb-4">
+        <div class="wallet-circle me-3 shadow-sm">
+            <i class="bi bi-wallet2 fs-4"></i>
+        </div>
+        <h2 class="fw-800 text-dark mb-0">Управління виплатами</h2>
+    </div>
+    
+    <div class="payout-main-card p-4">
+        <ul class="nav nav-tabs border-bottom-0 mb-4" id="payoutTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests-pane" type="button" role="tab">
+                    Запити <span class="badge bg-danger rounded-pill ms-2" id="requestsCount">0</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="archive-tab" data-bs-toggle="tab" data-bs-target="#archive-pane" type="button" role="tab">Архів виплат</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="requests-pane" role="tabpanel">
+                <div id="payoutQueue" class="list-group list-group-flush border-0 mt-2">
+                    </div>
+            </div>
+
+            <div class="tab-pane fade" id="archive-pane" role="tabpanel">
+                <div class="table-responsive mt-2">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light text-muted small text-uppercase">
+                            <tr>
+                                <th class="ps-3">ID</th>
+                                <th>Дата виплати</th>
+                                <th>Викладач</th>
+                                <th>Сума</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payoutArchiveTable">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <div id="analyticsView" class="d-none">
+    <div class="mb-5">
+        <button class="btn-back shadow-sm mb-4" onclick="showDashboardView()">
+            <i class="bi bi-arrow-left me-2"></i> Назад до транзакцій
+        </button>
+        <div class="d-flex align-items-center">
+            <div class="icon-circle bg-success bg-opacity-10 text-success me-3 shadow-sm">
+                <i class="bi bi-bar-chart-line-fill fs-4"></i>
+            </div>
+            <div>
+                <h2 class="fw-800 text-dark mb-0" style="color: #1b5e20;">Детальна аналітика</h2>
+                <p class="text-muted mb-0 fw-medium">Показники ефективності та джерела прибутку платформи</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="crm-card mb-4">
+        <h5 class="fw-bold mb-4"><i class="bi text-success"></i>Динаміка обігу</h5>
+        <div style="height: 400px; width: 100%;">
+            <canvas id="bigAnalyticsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="crm-card h-100">
+                <h5 class="fw-bold mb-4">Джерела доходу</h5>
+                <div style="height: 300px;"><canvas id="sourceChart"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="crm-card h-100">
+                <h5 class="fw-bold mb-4">Топ-5 курсів</h5>
+                <div style="height: 300px;"><canvas id="topCoursesChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer-custom py-4 mt-auto border-top bg-white">
+  <div class="container text-center">
+    <p class="mb-0 fw-bold opacity-75 text-muted">&copy; 2026 Lexora Admin. Всі права захищені.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://localhost:5002/socket.io/socket.io.js"></script>
+<script src="../js/admin-navbar-loader.js"></script>
+<script src="../js/admin-notifications.js"></script>
+<script src="../js/admin-finance.js"></script>
+
+</body>
+</html>

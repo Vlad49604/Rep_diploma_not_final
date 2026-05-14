@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexora Admin — Дашборд</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css">
+
+<script src="../js/admin-guard.js"></script>
+
+</head>
+<body>
+
+<div id="admin-navbar-placeholder"></div>
+
+<main class="container py-4">
+
+  <section class="welcome-banner mb-5 d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+    <div class="position-relative z-1 mb-3 mb-md-0">
+      <h1 class="display-5 fw-bold mb-2 text-dark">Вітаємо, <span id="adminMainName" class="text-success">Адміністратор</span>!</h1>
+      <p class="lead text-muted mb-0 fs-5">Повний контроль над платформою: аналітика, контент та підтримка.</p>
+    </div>
+    <div class="z-1">
+    </div>
+  </section>
+
+  <section class="mb-5">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="crm-card p-4">
+                <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-graph-up text-success me-2"></i> Динаміка реєстрацій</h5>
+                <div class="chart-container chart-lg">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 d-flex flex-column gap-4">
+            <div class="crm-card p-4 flex-grow-1">
+                <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-funnel-fill text-success me-2"></i> Воронка залучення</h6>
+                <div class="chart-container chart-md">
+                    <canvas id="funnelChart"></canvas>
+                </div>
+            </div>
+            <div class="crm-card p-4 flex-grow-1 bg-light">
+                <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-award-fill text-success me-2"></i> Глобальний GPA</h6>
+                <div class="d-flex align-items-center justify-content-between mt-2">
+                    <div class="chart-container chart-sm">
+                        <canvas id="gpaChart"></canvas>
+                    </div>
+                    <div class="text-end">
+                        <h2 id="globalGpaValue" class="fw-bold text-success mb-0 fs-1">--%</h2>
+                        <small class="text-muted fw-medium">Середній показник</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <section class="mb-5">
+    <div class="d-flex align-items-center mb-4">
+      <i class="bi bi-grid-1x2-fill text-success fs-3 me-2"></i>
+      <h3 class="fw-bold mb-0 text-dark">Інструменти управління</h3>
+    </div>
+
+    <div class="row g-4">
+      
+      <div class="col-lg-6">
+        <div class="crm-card p-4 p-md-5 d-flex flex-column justify-content-between h-100">
+          <div class="d-flex align-items-center gap-4 mb-4">
+            <div class="icon-wrapper-lg rounded-circle bg-success bg-opacity-10 text-success shadow-sm flex-shrink-0">
+              <i class="bi bi-people-fill"></i>
+            </div>
+            <h4 class="fw-bold mb-0 text-dark">Користувачі</h4>
+          </div>
+          <p class="text-muted fs-6 mb-5">Модерація бази, блокування порушників та детальна аналітика прогресу студентів.</p>
+          <a href="admin-users.html" class="btn btn-success text-white btn-lg rounded-pill fw-bold w-100 mt-auto shadow-sm">Переглянути базу</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="crm-card p-4 p-md-5 d-flex flex-column justify-content-between h-100">
+          <div class="d-flex align-items-center gap-4 mb-4">
+            <div class="icon-wrapper-lg rounded-circle bg-success bg-opacity-10 text-success shadow-sm flex-shrink-0">
+              <i class="bi bi-collection-play-fill"></i>
+            </div>
+            <h4 class="fw-bold mb-0 text-dark">Реєстр курсів</h4>
+          </div>
+          <p class="text-muted fs-6 mb-5">Контроль усіх курсів на платформі. Модерація статусів публікації.</p>
+          <a href="admin-manage-courses.html" class="btn btn-success text-white btn-lg rounded-pill fw-bold w-100 mt-auto shadow-sm">Відкрити реєстр</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="crm-card p-4 p-md-5 d-flex flex-column justify-content-between h-100">
+          <div class="d-flex align-items-center gap-4 mb-4">
+            <div class="icon-wrapper-lg rounded-circle bg-success bg-opacity-10 text-success shadow-sm flex-shrink-0">
+              <i class="bi bi-journal-bookmark-fill"></i>
+            </div>
+            <h4 class="fw-bold mb-0 text-dark">Контент Lexora</h4>
+          </div>
+          <p class="text-muted fs-6 mb-5">Керування офіційними навчальними матеріалами та структурою уроків.</p>
+          
+          <div class="d-flex gap-2 mt-auto">
+            <a href="add.html" class="btn btn-success text-white btn-lg rounded-pill fw-bold flex-grow-1 shadow-sm d-flex align-items-center justify-content-center">
+              Створити
+            </a>
+            <a href="edit.html" class="btn btn-success text-white btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center justify-content-center" title="Редагувати">
+              <i class="bi bi-pencil-square"></i>
+            </a>
+            <a href="delete.html" class="btn btn-success text-white btn-lg rounded-pill px-4 shadow-sm d-flex align-items-center justify-content-center" title="Видалити">
+              <i class="bi bi-trash"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="crm-card p-4 p-md-5 d-flex flex-column justify-content-between h-100">
+          <div class="d-flex align-items-center gap-4 mb-4">
+            <div class="icon-wrapper-lg rounded-circle bg-success bg-opacity-10 text-success shadow-sm flex-shrink-0">
+              <i class="bi bi-envelope-paper-fill"></i>
+            </div>
+            <h4 class="fw-bold mb-0 text-dark">Розсилки</h4>
+          </div>
+          <p class="text-muted fs-6 mb-5">Масова комунікація зі студентською базою для підвищення активності та продажів.</p>
+          <a href="admin-mailing.html" class="btn btn-success text-white btn-lg rounded-pill fw-bold w-100 mt-auto shadow-sm">Створити розсилку</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="crm-card p-4 p-md-5 d-flex flex-column justify-content-between h-100">
+          <div class="d-flex align-items-center gap-4 mb-4">
+            <div class="icon-wrapper-lg rounded-circle bg-success bg-opacity-10 text-success shadow-sm flex-shrink-0">
+              <i class="bi bi-headset"></i>
+            </div>
+            <h4 class="fw-bold mb-0 text-dark">Підтримка</h4>
+          </div>
+          <p class="text-muted fs-6 mb-5">Обробка технічних запитів через систему тікетів та допомога студентам.</p>
+          <a href="admin-tickets.html" class="btn btn-success text-white btn-lg rounded-pill fw-bold w-100 mt-auto shadow-sm">Відповісти на тікети</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="crm-card p-4 p-md-5 d-flex flex-column justify-content-between h-100">
+          <div class="d-flex align-items-center gap-4 mb-4">
+            <div class="icon-wrapper-lg rounded-circle bg-success bg-opacity-10 text-success shadow-sm flex-shrink-0">
+              <i class="bi bi-wallet2"></i>
+            </div>
+            <h4 class="fw-bold mb-0 text-dark">Фінанси</h4>
+          </div>
+          <p class="text-muted fs-6 mb-5">Моніторинг транзакцій, аналітика прибутку та виплати викладачам.</p>
+          <a href="admin-finance.html" class="btn btn-success text-white btn-lg rounded-pill fw-bold w-100 mt-auto shadow-sm">Дашборд виплат</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer-custom py-4">
+  <div class="container text-center">
+    <p class="mb-0 fw-bold opacity-75">&copy; 2026 Lexora Admin. Всі права захищені.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="../js/admin-main-dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://localhost:5002/socket.io/socket.io.js"></script>
+<script src="../js/admin-navbar-loader.js"></script>
+<script src="../js/admin-notifications.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if(user && user.name){
+        document.getElementById('adminMainName').textContent = user.name;
+      }
+  });
+</script>
+
+</body>
+</html>

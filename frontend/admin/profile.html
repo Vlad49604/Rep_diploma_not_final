@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профіль Адміністратора — Lexora Admin</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/admin.css">
+  <script src="../js/admin-guard.js"></script>
+  
+  <style>
+    /* --- ГЛОБАЛЬНИЙ БРЕНДИНГ LEXORA --- */
+    :root {
+        --primary-color: #44BF69;
+        --secondary-color: #1B5E20;
+        --bg-color: #f1f8e9;
+        --footer-bg: #d6efd6;
+        --danger-color: #dc3545;
+    }
+
+    body {
+        background-color: var(--bg-color) !important;
+        padding-top: 30px; /* Відступ під Navbar */
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    main { flex: 1 0 auto; padding-bottom: 60px; }
+
+    /* --- КАРТКИ --- */
+    .profile-card {
+        background: #ffffff !important;
+        border-radius: 24px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+        padding: 35px !important;
+        margin-bottom: 25px;
+        border: 1px solid rgba(31, 141, 40, 0.1) !important;
+        height: 100%;
+    }
+
+    h1, h2, h3, h5 { color: var(--secondary-color); font-weight: 800; letter-spacing: -0.5px; }
+
+    /* --- АВАТАР --- */
+    .avatar-circle {
+        width: 120px;
+        height: 120px;
+        background: rgba(68, 191, 105, 0.15); /* Світло-зелений фон */
+        color: var(--primary-color);
+        font-size: 3.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: 800;
+        border: 4px solid #fff;
+        box-shadow: 0 8px 20px rgba(68, 191, 105, 0.2);
+    }
+
+    /* --- ЕЛЕМЕНТИ ДАНИХ --- */
+    .admin-data-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background: #f8fcf9;
+        border: 1px solid #edf2f0;
+        border-radius: 16px;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+    }
+
+    .admin-data-item:hover {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+        border-color: #c2e2c9;
+        transform: translateY(-2px);
+    }
+
+    /* --- КНОПКИ --- */
+    .btn-lexora {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 14px 25px;
+        border-radius: 50px;
+        font-weight: 700;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(68, 191, 105, 0.2);
+    }
+    .btn-lexora:hover { background-color: var(--secondary-color); color: white; transform: translateY(-2px); }
+    
+    .btn-outline-danger {
+        border-radius: 50px;
+        font-weight: 700;
+        padding: 12px 25px;
+        transition: 0.3s;
+    }
+    .btn-outline-danger:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2); }
+
+    /* --- ФОРМИ --- */
+    .form-control {
+        border-radius: 12px;
+        padding: 12px 18px;
+        border: 1.5px solid #edf2f0;
+        background-color: #f8f9fa;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    .input-group-text {
+        border-radius: 12px 0 0 12px;
+        border: 1.5px solid #edf2f0;
+        border-right: none;
+        background-color: #f8f9fa;
+    }
+    .input-group .form-control {
+        border-radius: 0 12px 12px 0;
+        border-left: none;
+    }
+    .form-control:focus {
+        border-color: var(--primary-color);
+        background-color: #fff;
+        box-shadow: none;
+    }
+    .form-control:focus + .input-group-text,
+    .input-group:focus-within .input-group-text {
+        border-color: var(--primary-color);
+        background-color: #fff;
+    }
+
+    /* --- ТЕРМІНАЛ (МОДАЛКА) --- */
+    .terminal-modal .modal-content {
+        background-color: #1a1d20;
+        color: #e9ecef;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .terminal-header {
+        color: var(--primary-color);
+        font-family: 'Courier New', Courier, monospace;
+        letter-spacing: 1px;
+    }
+    .terminal-title { color: #20c997; }
+    
+    #auditLogsContainer::-webkit-scrollbar { width: 6px; }
+    #auditLogsContainer::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    #auditLogsContainer::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+    #auditLogsContainer::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    /* --- ФУТЕР --- */
+    .footer-custom {
+        background-color: var(--footer-bg) !important; 
+        padding: 25px 0; 
+        margin-top: auto; 
+        text-align: center;
+        flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div id="admin-navbar-placeholder"></div>
+
+<main class="container">
+  <div class="row g-4">
+    
+    <div class="col-lg-4">
+      <div class="profile-card text-center mb-0">
+        
+        <div class="position-relative d-inline-block mx-auto mb-3 mt-2">
+            <div class="avatar-circle mb-0" id="profileAvatar">
+                <div class="spinner-border text-success" role="status"></div>
+            </div>
+        </div>
+        
+        <h3 class="fw-bold mb-1" id="profileName">Завантаження...</h3>
+        <div class="text-muted mb-2 fw-medium" id="profileEmail">...</div>
+        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-2 mb-4">
+            <i class="bi bi-shield-check me-1"></i> Системний Адміністратор
+        </span>
+        
+        <hr class="opacity-10 my-4 mt-2" style="border-color: var(--secondary-color);">
+
+        <h5 class="fw-bold mb-3 text-start"><i class="bi bi-shield-lock me-2 text-success"></i>Зміна пароля</h5>
+        
+        <div id="passwordAlert" class="alert d-none rounded-3 small py-2 text-start fw-bold" role="alert"></div>
+
+        <form id="changePasswordForm" class="text-start mb-2">
+            <div class="mb-3">
+                <label class="form-label text-muted small fw-bold text-uppercase">Поточний пароль</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-key text-success"></i></span>
+                    <input type="password" class="form-control" id="currentPassword" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-muted small fw-bold text-uppercase">Новий пароль</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock text-success"></i></span>
+                    <input type="password" class="form-control" id="newPassword" minlength="6" required>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-muted small fw-bold text-uppercase">Підтвердіть пароль</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill text-success"></i></span>
+                    <input type="password" class="form-control" id="confirmPassword" minlength="6" required>
+                </div>
+            </div>
+            <button type="submit" id="submitBtn" class="btn btn-lexora w-100 mt-2">Оновити пароль</button>
+        </form>
+
+      </div>
+    </div> 
+    
+    <div class="col-lg-8">
+      
+      <div class="profile-card mb-4" style="height: auto;">
+        <div class="d-flex align-items-center mb-4">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+            <i class="bi bi-info-square-fill fs-4"></i>
+          </div>
+          <h3 class="fw-bold mb-0">Системна інформація</h3>
+        </div>
+        <p class="text-muted fw-medium mb-4">Деталі вашого облікового запису та права доступу до платформи Lexora.</p>
+        
+        <div>
+            <div class="admin-data-item">
+                <div>
+                    <h6 class="mb-1 fw-bold text-dark">Рівень доступу</h6>
+                    <small class="text-muted">Ваша поточна роль у базі даних</small>
+                </div>
+                <span class="badge bg-success fs-6 rounded-pill px-3 py-2">Admin</span>
+            </div>
+
+            <div class="admin-data-item mb-4">
+                <div>
+                    <h6 class="mb-1 fw-bold text-dark">Дата створення акаунта</h6>
+                    <small class="text-muted">Коли цей профіль було зареєстровано</small>
+                </div>
+                <div class="fw-bold text-success fs-5" id="profileDate">Завантаження...</div>
+            </div>
+
+            <div class="mt-4 p-4 rounded-4 d-flex flex-column flex-sm-row justify-content-between align-items-center" style="background-color: #fafdfa; border: 2px dashed #c2e2c9;">
+                <div class="d-flex align-items-center gap-3 mb-3 mb-sm-0">
+                    <div class="bg-white text-success rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 54px; height: 54px; flex-shrink: 0; border: 1px solid #edf2f0;">
+                        <i class="bi bi-shield-check fs-3"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 fw-bold text-dark">Моніторинг та аудит</h6>
+                        <div class="small text-muted fw-medium">Перевірка стану системи та логи безпеки</div>
+                    </div>
+                </div>
+                <button class="btn btn-success rounded-pill px-4 fw-bold shadow-sm text-nowrap" onclick="openSystemHealth()">
+                    <i class="bi bi-activity me-1"></i> Запустити
+                </button>
+            </div>
+        </div>
+      </div>
+
+      <div class="profile-card mb-0" style="height: auto;">
+        <div class="d-flex align-items-center mb-4">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+            <i class="bi bi-laptop fs-4"></i>
+          </div>
+          <h3 class="fw-bold mb-0">Активні сесії</h3>
+        </div>
+        <p class="text-muted fw-medium mb-4">Управління підключеннями. Завершіть сесію, якщо ви працювали з чужого комп'ютера.</p>
+
+        <div class="mb-4 p-4 bg-success bg-opacity-10 border border-success border-opacity-25 rounded-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <i class="bi bi-pc-display fs-1 text-success"></i>
+                <div>
+                    <h6 class="mb-1 fw-bold text-dark">Поточний пристрій</h6>
+                    <div class="small text-muted fw-medium">Ваша активна сесія</div>
+                </div>
+            </div>
+            <span class="badge bg-success rounded-pill px-3 py-2 fs-6 shadow-sm">Online</span>
+        </div>
+
+        
+      </div>
+
+    </div> 
+  </div>
+</main>
+
+<div class="modal fade terminal-modal" id="systemHealthModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-lg">
+      
+      <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex align-items-center">
+        <h5 class="modal-title fw-bold terminal-header">
+          <i class="bi bi-terminal-fill me-2"></i>Lexora_OS <span class="text-muted">//</span> <span class="terminal-title">System_Monitor</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white opacity-50" data-bs-dismiss="modal" style="font-size: 0.8rem;"></button>
+      </div>
+
+      <div class="modal-body p-4 font-monospace">
+        
+        <div class="row g-3 mb-4 pb-4" id="healthMetricsContainer" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
+            <div class="text-center text-muted">Опитування сенсорів...</div>
+        </div>
+
+        <h6 class="fw-bold mb-3 terminal-title" style="font-family: 'Courier New', Courier, monospace;">>_ SECURITY_AUDIT_LOGS</h6>
+        
+        <div id="auditLogsContainer" class="d-flex flex-column gap-2" style="max-height: 350px; overflow-y: auto; padding-right: 10px;">
+            </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer-custom">
+  <div class="container text-center">
+    <p class="mb-0 fw-bold opacity-75 ">&copy; 2026 Lexora Admin. Всі права захищені.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/admin-navbar-loader.js"></script>
+<script src="../js/admin-profile.js"></script>
+
+</body>
+</html>

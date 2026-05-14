@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexora — Розсилка</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/teacher-style.css"> 
+
+    <style>
+        body { background-color: #f1f8e9 !important; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .mailing-card {
+            background: #ffffff !important;
+            border-radius: 24px !important;
+            border: 1px solid rgba(31, 141, 40, 0.1) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+            padding: 50px !important;
+        }
+        h3.fw-800 { font-weight: 800 !important; letter-spacing: -0.5px; }
+        .form-select, .form-control {
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            border-radius: 50px !important;
+            padding: 10px 20px !important;
+            border: 1.5px solid #e9ecef !important;
+            background-color: #f8f9fa !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: rgb(68, 191, 105) !important;
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.08) !important;
+            background-color: #fff !important;
+        }
+        textarea.form-control { border-radius: 20px !important; }
+        .recipients-list {
+            background: #fafdfa;
+            border-radius: 15px;
+            border: 1.5px solid #edf2ed;
+            padding: 15px;
+            min-height: 60px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .student-badge {
+            background: #f1f8e9;
+            color: #2E7D32;
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            border: 1px solid #e0eadd;
+        }
+        .upload-zone {
+            border: 2px dashed #d1dbd1;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .upload-zone:hover { border-color: #44BF69; background: #f8fcf9; }
+    </style>
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<main class="container" style="margin-top: 130px; max-width: 850px; padding-bottom: 60px;">
+    <div class="mailing-card" id="mainFormCard">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px;">
+                <i class="bi bi-megaphone fs-5"></i>
+            </div>
+            <h3 class="fw-800 text-dark mb-0">Нова розсилка</h3>
+        </div>
+
+        <form id="teacherMailingForm">
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="small fw-bold text-muted ms-2 mb-1">Вибір курсу</label>
+                    <select class="form-select" id="courseFilter">
+                        <option value="all">Всі курси</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="small fw-bold text-muted ms-2 mb-1">Група студентів</label>
+                    <select class="form-select" id="recipientCondition">
+                        <option value="all">Всі студенти</option>
+                        <option value="inactive">Неактивні студенти</option>
+                        <option value="excellent">Відмінники</option>
+                        <option value="stuck">Застрягли</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="daysInputWrapper" class="mb-3 d-none px-3 py-2 bg-light rounded-4">
+                <label class="small fw-bold">Днів без входу:</label>
+                <input type="number" class="form-control d-inline-block ms-2" style="width: 80px;" id="filterDays" value="5">
+            </div>
+
+            <button type="button" class="btn btn-outline-success rounded-pill w-100 fw-bold mb-3" onclick="loadMyStudents()" id="loadStudentsBtn">
+                Завантажити список отримувачів
+            </button>
+
+            <div class="row g-2 mb-3">
+              <div class="col-md-8 position-relative">
+                  <input type="text" class="form-control" id="manualEmail" placeholder="Знайти студента за ім'ям або email..." autocomplete="off">
+                  <ul class="dropdown-menu w-100 shadow border-0 mt-1" id="emailSuggestions" style="display: none; max-height: 200px; overflow-y: auto; z-index: 1050; border-radius: 15px;"></ul>
+              </div>
+              <div class="col-md-4">
+                  <button type="button" class="btn btn-light border w-100 fw-bold rounded-pill h-100" onclick="addManualEmail()">
+                      Додати студента
+                  </button>
+              </div>
+          </div>
+            
+            <div class="recipients-list mb-3" id="recipientsList">
+                <div class="text-center text-muted small py-2">Список порожній</div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 px-2">
+                <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none fw-bold d-none" id="clearAllBtn" data-bs-toggle="modal" data-bs-target="#clearListModal">
+                    Очистити все
+                </button>
+                <div class="ms-auto small fw-bold text-dark">Обрано: <span id="recipientsCount" class="text-success">0</span></div>
+            </div>
+
+            <div class="mb-3">
+                <input type="text" class="form-control" id="mailSubject" placeholder="Тема повідомлення..." required>
+            </div>
+
+            <div class="mb-3">
+                <div class="upload-zone" id="uploadBox" onclick="document.getElementById('mailImage').click()">
+                    <i class="bi bi-image text-success fs-4"></i>
+                    <span class="ms-2 small fw-bold text-muted">Додати банер до листа</span>
+                    <input type="file" id="mailImage" class="d-none" accept="image/*">
+                    <input type="hidden" id="uploadedImageUrl">
+                </div>
+                <div class="text-center mt-2">
+                    <img id="imagePreview" src="" class="img-fluid d-none rounded-3 shadow-sm mb-2" style="max-height: 120px;">
+                    <button type="button" id="removeImageBtn" class="btn btn-sm text-danger fw-bold d-none" onclick="removeImage()">Видалити фото</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <textarea class="form-control" id="mailBody" rows="5" placeholder="Текст розсилки..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold shadow-sm" id="sendBtn">
+                Надіслати розсилку
+            </button>
+        </form>
+    </div>
+</main>
+
+<div class="modal fade" id="clearListModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-x-circle fs-2"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-2">Очистити список?</h5>
+        <p class="text-muted small mb-4">Ви впевнені, що хочете видалити всіх отримувачів зі списку?</p>
+        <div class="d-flex gap-2 justify-content-center">
+          <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Ні</button>
+          <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm" onclick="executeClearList()">Так, очистити</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="noStudentsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-person-exclamation fs-2"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-2">Нікого не знайдено</h5>
+        <p class="text-muted small mb-4">За обраними фільтрами не знайдено жодного студента.</p>
+        <button type="button" class="btn btn-success rounded-pill w-100 fw-bold shadow-sm" data-bs-dismiss="modal">Зрозуміло</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="successMailingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-check2-circle fs-1"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-2">Готово!</h5>
+        <p class="text-muted small mb-4">Лист успішно надіслано <b id="successSentCount" class="text-success fs-6">0</b> студентам.</p>
+        
+        <div class="d-flex flex-column gap-2">
+          <a href="teacher.html" class="btn btn-success rounded-pill fw-bold shadow-sm w-100">Повернутись на головну</a>
+          <button type="button" class="btn btn-light rounded-pill fw-bold w-100" onclick="resetMailingForm()" data-bs-dismiss="modal">Нова розсилка</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="emailErrorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-body p-4 text-center">
+        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+          <i class="bi bi-envelope-exclamation fs-2"></i>
+        </div>
+        <h5 class="fw-bold text-dark mb-2">Невірний Email</h5>
+        <p class="text-muted small mb-4">Будь ласка, введіть коректну адресу електронної пошти для пошуку.</p>
+        <button type="button" class="btn btn-warning rounded-pill w-100 fw-bold shadow-sm text-white" data-bs-dismiss="modal">Зрозуміло</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer-custom py-4">
+  <div class="container text-center">
+    <h5 class="mb-3 fw-bold">Звʼяжіться з нами</h5>
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+      <a href="tel:+380951011590" class="contact-item text-decoration-none"><i class="bi bi-telephone-fill text-success"></i> +380951011590</a>
+      <a href="mailto:lexoraengcourses@gmail.com" class="contact-item text-decoration-none"><i class="bi bi-envelope-fill text-success"></i> lexoraengcourses@gmail.com</a>
+      <span class="contact-item"><i class="bi bi-geo-alt-fill text-success"></i> м. Львів, вул. Наукова 30</span>
+    </div>
+    <hr class="my-3 opacity-25" style="border-color: var(--secondary-color);">
+    <p class="mt-3 mb-0 small text-muted">&copy; 2026 Lexora. Всі права захищені.</p>
+  </div>
+</footer>
+
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://localhost:5002/socket.io/socket.io.js"></script>
+<script src="../js/teacher-navbar-loader.js"></script>
+<script src="../js/teacher-notifications.js"></script>
+<script src="../js/teacher-mailing.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexora Admin — Видалення контенту</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="../js/admin-guard.js"></script>
+    
+    <style>
+        /* --- ГЛОБАЛЬНИЙ БРЕНДИНГ LEXORA --- */
+        :root {
+            --primary-color: #44BF69;
+            --secondary-color: #1B5E20;
+            --bg-color: #f1f8e9;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            background-color: var(--bg-color) !important;
+            padding-top: 30px; /* ЯК ТИ ПРОСИВ */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main { flex: 1 0 auto; padding-bottom: 60px; }
+
+        /* --- КАРТКИ --- */
+        .admin-card {
+            background: #ffffff !important;
+            border-radius: 24px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+            padding: 35px !important;
+            margin-bottom: 25px;
+            border: 1px solid rgba(31, 141, 40, 0.1) !important;
+            height: auto !important;
+            transform: none !important;
+            transition: none !important;
+        }
+
+        h1, h2, h3 { color: var(--secondary-color); font-weight: 800; letter-spacing: -0.5px; }
+
+        /* --- ПРЕВ'Ю ВИДАЛЕННЯ (СТИЛІЗОВАНЕ) --- */
+        .info-preview {
+            background: #fffafa !important;
+            border: 1px solid #fee2e2 !important;
+            border-radius: 16px !important;
+            padding: 25px !important;
+            margin-top: 20px;
+        }
+
+        .preview-img {
+            max-width: 180px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .info-label { font-size: 0.75rem; text-transform: uppercase; color: #b91c1c; font-weight: 800; opacity: 0.6; margin-bottom: 4px; }
+        .info-value { font-weight: 700; color: #1f2937; margin-bottom: 15px; font-size: 1.1rem; }
+
+        /* --- КНОПКИ --- */
+        .btn-delete {
+            background-color: var(--danger-color) !important;
+            color: white !important;
+            border: none !important;
+            padding: 14px !important;
+            border-radius: 50px !important;
+            font-weight: 700 !important;
+            width: 100%;
+            transition: 0.3s !important;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2) !important;
+        }
+        .btn-delete:hover { background-color: #bd2130 !important; transform: translateY(-2px); }
+
+        .form-label { font-weight: 700; margin-top: 15px; color: var(--secondary-color); font-size: 0.85rem; text-transform: uppercase; opacity: 0.7; }
+        
+        .form-control, .form-select {
+            border-radius: 12px !important; padding: 12px 18px !important; border: 1.5px solid #edf2f0 !important;
+            background-color: #f8f9fa !important; font-weight: 500;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color) !important; background-color: #fff !important;
+            box-shadow: 0 0 0 0.25rem rgba(68, 191, 105, 0.15) !important;
+        }
+
+        .icon-box {
+            width: 48px; height: 48px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(68, 191, 105, 0.1); color: var(--primary-color);
+            margin-right: 15px; font-size: 1.3rem;
+        }
+        
+        .icon-box.danger { background: rgba(220, 53, 69, 0.1); color: var(--danger-color); }
+
+        /* --- ФУТЕР (ТВІЙ ОРИГІНАЛЬНИЙ) --- */
+        .footer-custom {
+            padding: 1.5rem 0;
+            margin-top: auto;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        /* Нові стилі для прев'ю */
+.info-item { display: flex; align-items: center; gap: 10px; }
+.italic { font-style: italic; }
+.border-dashed { border: 2px dashed #dee2e6 !important; }
+
+/* Покращення ієрархії тексту */
+.info-label {
+    font-size: 0.7rem !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--secondary-color);
+    opacity: 0.5;
+    font-weight: 800;
+    margin-top: 10px;
+}
+
+.info-value {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* Анімація появи прев'ю */
+.info-preview {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Стилізація небезпечного перемикача */
+/* Стилізація перемикача під бренд Lexora */
+.form-switch .form-check-input:checked {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(68, 191, 105, 0.15) !important;
+}
+
+.form-check {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-check:hover {
+    background-color: rgba(68, 191, 105, 0.2) !important;
+    transform: translateY(-1px);
+}
+
+/* Колір іконки в режимі розблокування */
+#unlockAllToggle:checked + label i {
+    animation: pulse green 1.5s infinite;
+}
+    </style>
+</head>
+<body>
+
+<div id="admin-navbar-placeholder"></div>
+
+<main class="container">
+    <div class="admin-card">
+    <h1 class="mb-4"><div class="icon-box"><i class="bi bi-trash3"></i></div>Керування базою</h1>
+    <p class="text-muted fw-medium fs-5">Виберіть об'єкт для перегляду та безповоротного видалення.</p>
+    
+    <select id="deleteTypeSelect" class="form-select form-select-lg mt-3 fw-bold text-dark border-success border-opacity-25">
+        <option value="">-- Що видаляємо? --</option>
+        <option value="course">Курс</option>
+        <option value="section">Секція</option>
+        <option value="task">Завдання</option>
+    </select>
+
+    <div class="form-check form-switch mt-4 d-inline-flex align-items-center gap-3 p-3 rounded-4 border border-success border-opacity-25 bg-success bg-opacity-10" style="cursor: pointer;">
+        <input class="form-check-input ms-0 mt-0" type="checkbox" id="unlockAllToggle" style="width: 2.5em; height: 1.25em; cursor: pointer;">
+        <label class="form-check-label fw-bold text-success small text-uppercase" for="unlockAllToggle" style="letter-spacing: 0.5px; cursor: pointer;">
+            <i class="bi bi-unlock-fill me-1"></i> Режим розширеного доступу (всі курси)
+        </label>
+    </div>
+</div>
+
+    <div id="courseDeleteBlock" class="admin-card" style="display: none">
+        <h2><div class="icon-box danger"><i class="bi bi-journal-x"></i></div>Видалити курс</h2>
+        <label class="form-label">Виберіть курс</label>
+        <select id="deleteCourseSelect" class="form-select mb-3 fw-bold"></select>
+        <div id="coursePreview" class="info-preview shadow-sm"></div>
+        <button id="deleteCourseBtn" class="btn btn-delete mt-4">Підтвердити видалення</button>
+    </div>
+
+    <div id="sectionDeleteBlock" class="admin-card" style="display: none">
+        <h2><div class="icon-box danger"><i class="bi bi-journal-x"></i></div>Видалити секцію</h2>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Курс</label>
+                <select id="deleteCourseSelectSection" class="form-select fw-bold"></select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Секція</label>
+                <select id="deleteSectionSelect" class="form-select fw-bold"></select>
+            </div>
+        </div>
+        <div id="sectionPreview" class="info-preview shadow-sm"></div>
+        <button id="deleteSectionBtn" class="btn btn-delete mt-4">Видалити секцію</button>
+    </div>
+
+    <div id="taskDeleteBlock" class="admin-card" style="display: none">
+        <h2><div class="icon-box danger"><i class="bi bi-file-earmark-x"></i></div>Видалити завдання</h2>
+        <div class="row g-3">
+            <div class="col-md-4"><label class="form-label">Курс</label><select id="deleteCourseSelectTask" class="form-select fw-bold"></select></div>
+            <div class="col-md-4"><label class="form-label">Секція</label><select id="deleteSectionSelectTask" class="form-select fw-bold"></select></div>
+            <div class="col-md-4"><label class="form-label">Завдання</label><select id="deleteTaskSelect" class="form-select fw-bold"></select></div>
+        </div>
+        <div id="taskPreview" class="info-preview shadow-sm"></div>
+        <button id="deleteTaskBtn" class="btn btn-delete mt-4">Видалити завдання</button>
+    </div>
+</main>
+
+<footer class="footer-custom py-4">
+  <div class="container text-center">
+    <p class="mb-0 fw-bold opacity-75 text-dark">&copy; 2026 Lexora Admin. Всі права захищені.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://localhost:5002/socket.io/socket.io.js"></script>
+<script src="../js/admin-navbar-loader.js"></script>
+<script src="../js/admin-notifications.js"></script>
+<script src="../js/admin-delete.js"></script>
+
+</body>
+</html>

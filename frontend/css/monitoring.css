@@ -1,0 +1,112 @@
+/* --- МОНІТОРИНГ: СПЕЦИФІЧНІ СТИЛІ --- */
+
+main {
+    margin-top: 100px !important;
+    padding-bottom: 50px;
+}
+
+/* КАРТКИ КОНТЕНТУ */
+.content-card { 
+    background: white; 
+    border-radius: 25px; 
+    padding: 40px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08) !important;
+}
+
+/* СТАТИСТИКА ТА КАРТА НАВИЧОК */
+.stat-box-custom {
+    background: white;
+    border-radius: 25px;
+    padding: 25px;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+}
+
+.course-percent-circle {
+    min-width: 55px;
+    height: 55px;
+    background: var(--bg-color);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+}
+
+/* ТЕПЛОВА КАРТА (HEATMAP) АКТИВНОСТІ */
+.day-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 15px 10px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.day-card .day-name { font-size: 11px; text-transform: uppercase; color: #888; font-weight: bold; }
+.day-card .day-date { font-size: 16px; font-weight: 800; margin: 5px 0; }
+.day-card .task-count { font-size: 10px; color: white; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+
+.day-level-0 { background-color: #f1f1f1; color: #999; }
+.day-level-0 .task-count { background-color: #ccc; }
+.day-level-1 { background-color: #e8f5e9; border-color: #c8e6c9; }
+.day-level-1 .task-count { background-color: #81c784; }
+.day-level-2 { background-color: #c8e6c9; border-color: #81c784; }
+.day-level-2 .task-count { background-color: #4caf50; }
+.day-level-3 { background-color: #1b5e20; color: white !important; }
+.day-level-3 .day-name { color: rgba(255,255,255,0.7); }
+.day-level-3 .task-count { background-color: #2e7d32; border: 1px solid rgba(255,255,255,0.3); }
+
+/* АКТИВНИЙ ДЕНЬ */
+.day-card.active-day { 
+    border: 3px solid var(--primary-color) !important; 
+    box-shadow: 0 8px 20px rgba(27, 94, 32, 0.2) !important;
+    transform: scale(1.05);
+    position: relative;
+    z-index: 5;
+}
+
+.day-card.active-day::after {
+    content: 'Сьогодні';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-color);
+    color: white;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+/* ІСТОРІЯ ТА ФІЛЬТРИ */
+#toggleHistoryBtn { width: 240px !important; }
+#courseFilter { width: 320px !important; }
+
+.table-responsive {
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+thead th {
+    background-color: #f8fcf9 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+

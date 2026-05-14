@@ -1,0 +1,116 @@
+    /* ФІКСОВАНИЙ МЕСЕНДЖЕР НА ВЕСЬ ЕКРАН БЕЗ СКРОЛУ BODY */
+    body { 
+      background-color: #f1f8e9; 
+      height: 100vh; 
+      overflow: hidden; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    
+    .messenger-container { 
+      flex: 1; 
+      margin-top: 85px; /* Висота навбару */
+      display: flex; 
+      overflow: hidden; 
+      padding: 20px; 
+      gap: 20px; 
+    }
+
+    /* ЛІВА ЧАСТИНА (СПИСОК) */
+    .dialogs-list { 
+      background: #fff; 
+      border-radius: 20px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden; 
+      border: 1px solid rgba(31, 141, 40, 0.1); 
+    }
+    
+    .dialog-item { 
+        padding: 15px 20px;
+        cursor: pointer; 
+        transition: all 0.2s; 
+        border-left: 4px solid transparent; 
+        border-bottom: 1px solid #f8f9fa;
+    }
+    .dialog-item:hover { background-color: #f8fcf9; }
+    .dialog-item.active { background-color: #e8f5e9; border-left-color: var(--primary-color); }
+    
+    /* ПРАВА ЧАСТИНА (ЧАТ) */
+    .chat-area { 
+      background: #fff; 
+      border-radius: 20px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+      display: flex; 
+      flex-direction: column; 
+      overflow: hidden; 
+      border: 1px solid rgba(31, 141, 40, 0.1); 
+    }
+    
+    .messages-wrapper { 
+      flex: 1; 
+      overflow-y: auto; 
+      padding: 25px; 
+      background-color: #fafdfa; 
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* БУЛЬБАШКИ */
+    .message-bubble { 
+      max-width: 75%; 
+      padding: 12px 18px; 
+      border-radius: 18px; 
+      margin-bottom: 10px; 
+      position: relative; 
+      font-size: 0.95rem; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .msg-other { 
+      background: #fff; 
+      border: 1px solid #e0e6e0; 
+      border-bottom-left-radius: 4px; 
+      align-self: flex-start; 
+    }
+    .msg-me { 
+      background: var(--primary-color); 
+      color: white; 
+      border-bottom-right-radius: 4px; 
+      align-self: flex-end; 
+      box-shadow: 0 4px 10px rgba(31, 141, 40, 0.15);
+    }
+
+    /* ПІДТРИМКА */
+    #supportChatBtn { transition: 0.3s; cursor: pointer; border-radius: 12px; margin: 10px; }
+    #supportChatBtn:hover { background-color: #e9f5ec !important; transform: translateY(-2px); }
+    
+    /* ПОЛЕ ВВОДУ */
+    .chat-input-wrapper {
+        background: white;
+        padding: 15px 20px;
+        border-top: 1px solid #f0f4f0;
+    }
+    .custom-textarea {
+        border-radius: 15px !important;
+        border: 1px solid #e0e6e0 !important;
+        padding: 10px 15px !important;
+        resize: none;
+        background: #f8fcf9 !important;
+    }
+    .custom-textarea:focus { border-color: var(--primary-color) !important; box-shadow: none !important; }
+
+    .btn-send-lexora {
+        width: 45px;
+        height: 45px;
+        border-radius: 50% !important;
+        background: var(--primary-color) !important;
+        color: white !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none !important;
+        margin-left: 10px;
+        transition: 0.3s;
+    }
+    .btn-send-lexora:hover { transform: scale(1.1); background: var(--secondary-color) !important; }

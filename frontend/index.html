@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lexora — Курси англійської мови</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+
+<!-- Меню -->
+<nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img src="img/logo.png" alt="Lexora" class="logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Меню</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item"><a class="nav-link" href="#courses-top">Курси</a></li>
+          <li class="nav-item ms-lg-4"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Увійти</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Головний банер -->
+<header class="main-banner text-center py-5 text-white">
+  <div class="container">
+    <img src="img/logo2.png" alt="Lexora" class="banner-logo-circle mb-3">
+    <h1 class="display-4 fw-bold">Lexora: Англійська, що надихає.</h1>
+    <p class="lead">Ми перетворюємо навчання на цікаву пригоду. Приєднуйтесь до спільноти, яка говорить однією мовою.</p>
+    <button class="btn btn-primary btn-lg mt-3" data-bs-toggle="modal" data-bs-target="#registerModal">Вивчати з нами</button>
+  </div>
+  <a href="#courses-top" class="scroll-down">
+    <i class="bi bi-chevron-double-down"></i>
+  </a>
+
+</header>
+
+<!-- Секція системних курсів Lexora -->
+<section id="courses" class="container py-5">
+  <div id="courses-top"></div>
+
+  <h2 class="mb-5 text-center fw-bold" style="color: var(--heading-color);">Навчальні курси Lexora</h2>
+
+  <!-- Курс A2 -->
+  <div class="row align-items-center mb-5 pb-5 border-bottom">
+    <div class="col-md-6 mb-4 mb-md-0 d-flex justify-content-center">
+      <img src="img/courseA2.png" class="img-fluid rounded-4 shadow-sm w-75" alt="Курс A2">
+    </div>
+    <div class="col-md-6">
+      <div class="ps-lg-4">
+        <h3 class="fw-bold mb-3" style="color: var(--heading-color);">Англійська для початківців</h3>
+        <p class="text-muted mb-4" style="line-height: 1.8;">
+            Ваш місток від шкільної бази до реального спілкування. Ми замінили нудні тексти на живі ситуації: від замовлення їжі в подорожах до розповіді про свій розпорядок дня. Ви опануєте 800+ нових слів та навчитеся говорити про минуле та майбутнє без стресу.
+        </p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Записатися</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Курс B1 -->
+  <div class="row align-items-center mb-5 pb-5 border-bottom flex-md-row-reverse">
+    <div class="col-md-6 mb-4 mb-md-0 d-flex justify-content-center">
+      <img src="img/courseB1.png" class="img-fluid rounded-4 shadow-sm w-75" alt="Курс B1">
+    </div>
+    <div class="col-md-6">
+      <div class="pe-lg-4">
+        <h3 class="fw-bold mb-3" style="color: var(--heading-color);">English for Life & Career</h3>
+        <p class="text-muted mb-4" style="line-height: 1.8;">
+            Зробіть англійську інструментом для досягнення цілей. Курс фокусується на кар'єрному розвитку: від проходження співбесід до ділової переписки та обговорення глобальних трендів, таких як вплив ШІ на сучасне суспільство. Ваша аргументація стане точною, а впевненість — непохитною.
+        </p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Записатися</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Курс B2 -->
+  <div class="row align-items-center ">
+    <div class="col-md-6 mb-4 mb-md-0 d-flex justify-content-center">
+      <img src="img/courseB2.png" class="img-fluid rounded-4 shadow-sm w-75" alt="Курс B2">
+    </div>
+    <div class="col-md-6">
+      <div class="ps-lg-4">
+        <h3 class="fw-bold mb-3" style="color: var(--heading-color);">Fluency & Professional Impact</h3>
+        <p class="text-muted mb-4" style="line-height: 1.8;">
+            Рівень для тих, хто прагне впливати на аудиторію. Навчіться вести складні переговори, використовувати пасивний стан для професійної об'єктивності та cleft-речення для розстановки стратегічних акцентів. Ви навчитеся «читати між рядків» та створювати переконливі бізнес-звіти.
+        </p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Записатися</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- НОВА СЕКЦІЯ: Різноманіття курсів для студентів -->
+<section class="py-5" style="background-color: var(--bg-color);">
+  <div class="container">
+    <div class="p-4 p-md-5 rounded-4 shadow-sm bg-white" style="border: 2px dashed rgba(27, 94, 32, 0.2);">
+      <div class="row align-items-center">
+        
+        <!-- Текст для студента -->
+        <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+          <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-3 fw-bold">БІЛЬШЕ НІЖ БАЗА</span>
+          <h2 class="fw-bold mb-3" style="color: var(--heading-color);">Знайди курс під свої цілі</h2>
+          <p class="text-muted mb-4" style="font-size: 1.1rem; line-height: 1.7;">
+            Трьох рівнів замало? Ми теж так думаємо. В каталозі Lexora на тебе чекають десятки авторських програм від практикуючих викладачів. Опановуй саме те, що потрібно тобі зараз: від <strong>English for DevOps</strong> до специфічної термінології для медиків чи підготовки до міжнародних іспитів.
+          </p>
+          
+          <div class="row g-2">
+            <div class="col-6 col-md-4">
+               <div class="d-flex align-items-center gap-2 py-1"><i class="bi bi-terminal text-success"></i> <span class="small fw-bold">IT & Tech</span></div>
+            </div>
+            <div class="col-6 col-md-4">
+               <div class="d-flex align-items-center gap-2 py-1"><i class="bi bi-briefcase text-success"></i> <span class="small fw-bold">Business</span></div>
+            </div>
+            <div class="col-6 col-md-4">
+               <div class="d-flex align-items-center gap-2 py-1"><i class="bi bi-heart-pulse text-success"></i> <span class="small fw-bold">Medicine</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Заклик до дії -->
+        <div class="col-lg-5 text-center">
+          <div class="p-4 rounded-4" style="background-color: var(--bg-color);">
+              <i class="bi bi-search fs-1 text-success opacity-50 mb-3 d-block"></i>
+              <h5 class="fw-bold mb-3">Готовий побачити все?</h5>
+              <p class="small text-muted mb-4">Зареєструйся, щоб отримати повний доступ до нашої бібліотеки спеціалізованих курсів.</p>
+              <!-- Ведемо до реєстрації або входу -->
+              <button class="btn btn-primary rounded-pill px-5 py-2 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
+                Відкрити весь каталог
+              </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Секція для викладачів -->
+<section class="py-5" style="background-color: var(--bg-color);">
+  <div class="container"> <!-- Прибрали px-md-5, щоб не звужувати -->
+    
+    <!-- Внутрішня картка (Тепер на повну ширину контейнера) -->
+    <div class="p-4 p-md-5 shadow-sm border-0" style="background-color: var(--white); border-radius: var(--border-radius);">
+      <div class="row align-items-center flex-md-row-reverse">
+        
+        <!-- Колонка з іконкою -->
+        <div class="col-lg-5 text-center mb-4 mb-lg-0">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm" 
+               style="width: 220px; height: 220px; background-color: #f8fcf9 !important;">
+            <i class="bi bi-person-workspace" style="font-size: 8rem; color: var(--primary-color);"></i>
+          </div>
+        </div>
+
+        <!-- Колонка з текстом -->
+        <div class="col-lg-7">
+          <div class="pe-lg-2"> <!-- Трохи зменшили відступ справа для ширини тексту -->
+            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-3 fw-bold" 
+                  style="font-size: 0.8rem; letter-spacing: 0.5px;">ДЛЯ ФАХІВЦІВ</span>
+            
+            <h2 class="fw-bold mb-4" style="color: var(--heading-color); font-size: 2.5rem;">Бажаєте навчати в Lexora?</h2>
+            
+            <p class="text-muted mb-4" style="line-height: 1.8; font-size: 1.15rem;">
+              Наша платформа — це не просто сайт з курсами, а потужний інструмент для викладачів. 
+              Створюйте авторський контент, керуйте групами та використовуйте вбудовану аналітику 
+              для відстеження результатів у реальному часі.
+            </p>
+            
+            <!-- Перелік фішок -->
+            <div class="row g-3 mb-5">
+              <div class="col-6 col-sm-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span class="fw-bold">Конструктор уроків</span>
+                </div>
+              </div>
+              <div class="col-6 col-sm-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span class="fw-bold">Глибока аналітика</span>
+                </div>
+              </div>
+              <div class="col-6 col-sm-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span class="fw-bold">CRM для студентів</span>
+                </div>
+              </div>
+              <div class="col-6 col-sm-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-check-circle-fill text-success"></i>
+                  <span class="fw-bold">Центр комунікацій</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Кнопка -->
+            <button class="btn btn-primary btn-lg shadow-sm rounded-pill px-5" 
+                    data-bs-toggle="modal" data-bs-target="#registerModal">
+              Зареєструватися як викладач
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Короткий блок переваг -->
+<section class="py-5 text-center" style="background-color: var(--bg-color);">
+  <div class="container">
+    <h2 class="fw-bold mb-5" style="color: var(--heading-color);">Технології Lexora</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <i class="bi bi-cpu fs-1 text-success mb-3"></i>
+          <h5 class="fw-bold">AI</h5>
+          <p class="small text-muted mb-0">Ми використовуємо обробку природної мови для персоналізації твого шляху.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <i class="bi bi-graph-up-arrow fs-1 text-success mb-3"></i>
+          <h5 class="fw-bold">Smart Monitoring</h5>
+          <p class="small text-muted mb-0">Твій прогрес фіксується до найменших деталей, щоб ти бачив результат.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <i class="bi bi-shield-lock fs-1 text-success mb-3"></i>
+          <h5 class="fw-bold">Безпека даних</h5>
+          <p class="small text-muted mb-0">Надійний захист твоїх досягнень та платіжної інформації.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer-custom py-4">
+  <div class="container text-center">
+    <h5 class="mb-3 fw-bold" style="color: var(--heading-color);">Звʼяжіться з нами</h5>
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+      <a href="tel:+380951011590" class="contact-item"><i class="bi bi-telephone-fill"></i> +380951011590</a>
+      <a href="mailto:lexoraengcourses@gmail.com" class="contact-item"><i class="bi bi-envelope-fill"></i> lexoraengcourses@gmail.com</a>
+      <span class="contact-item"><i class="bi bi-geo-alt-fill"></i> м. Львів, вул. Наукова 30</span>
+    </div>
+    <hr class="my-3 opacity-25" style="border-color: var(--secondary-color);">
+    <p class="mt-3 mb-0 small">&copy; 2026 Lexora. Всі права захищені.</p>
+  </div>
+</footer>
+
+<!-- Модальне вікно для входу -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="loginModalLabel" style="color: var(--heading-color);">Увійти</h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Закрити"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="loginForm">
+          <div class="mb-3">
+            <label for="loginEmail" class="form-label fw-semibold">Email</label>
+            <input type="email" class="form-control bg-light border-0 shadow-none" id="loginEmail" required>
+          </div>
+          <div class="mb-4 position-relative">
+            <label for="loginPassword" class="form-label fw-semibold">Пароль</label>
+            <div class="password-container">
+              <input type="password" class="form-control bg-light border-0 shadow-none" id="loginPassword" required>
+              <i class="bi bi-eye" id="loginTogglePassword"></i>
+            </div>
+          </div>
+          <!-- Твоя кнопка з твоїми стилями .btn-primary -->
+          <button type="submit" id="loginSubmitBtn" class="btn btn-primary w-100">Увійти</button>
+        </form>
+        <p id="loginMessage" class="text-danger mt-3 text-center small fw-bold mb-0"></p>
+        <p class="mt-3 text-center small">
+          Ще немає акаунту? 
+          <a href="#" class="text-success fw-bold text-decoration-none" data-bs-target="#registerModal" data-bs-toggle="modal" data-bs-dismiss="modal">Зареєструватися</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модальне вікно для реєстрації -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="registerModalLabel" style="color: var(--heading-color);">Реєстрація у Lexora</h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Закрити"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="registerForm">
+          <div class="mb-3">
+            <label for="registerName" class="form-label fw-semibold">Ім'я</label>
+            <input type="text" class="form-control bg-light border-0 shadow-none" id="registerName" placeholder="Як вас звати?" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="registerEmail" class="form-label fw-semibold">Email</label>
+            <input type="email" class="form-control bg-light border-0 shadow-none" id="registerEmail" placeholder="example@gmail.com" required>
+          </div>
+
+          <div class="mb-3 position-relative">
+            <label for="registerPassword" class="form-label fw-semibold">Пароль</label>
+            <div class="password-container">
+              <input type="password" class="form-control bg-light border-0 shadow-none" id="registerPassword" placeholder="Створіть надійний пароль" required>
+              <i class="bi bi-eye" id="togglePassword"></i>
+            </div>
+            <ul id="passwordRules" class="small mt-2 list-unstyled" style="display: none; font-size: 0.8rem;">
+              <li id="rule-length" class="text-danger"><i class="bi bi-dot"></i> Мінімум 8 символів</li>
+              <li id="rule-letter" class="text-danger"><i class="bi bi-dot"></i> Хоча б одна буква</li>
+              <li id="rule-digit" class="text-danger"><i class="bi bi-dot"></i> Хоча б одна цифра</li>
+              <li id="rule-upper" class="text-danger"><i class="bi bi-dot"></i> Хоча б одна велика літера</li>
+            </ul>
+          </div>
+
+          <div class="mb-4">
+            <label for="registerRole" class="form-label fw-semibold text-success">Хто ви?</label>
+            <select class="form-select bg-light border-0 shadow-none" id="registerRole" required>
+              <option value="student" selected>Я учень</option>
+              <option value="teacher">Я вчитель</option>
+            </select>
+          </div>
+
+          <!-- Твоя кнопка з твоїми стилями .btn-primary -->
+          <button type="submit" id="registerSubmitBtn" class="btn btn-primary w-100">Зареєструватися</button>
+        </form>
+
+        <p id="registerMessage" class="mt-3 text-center small fw-bold mb-0"></p>
+        <p class="mt-4 text-center small">
+          Вже є акаунт? 
+          <a href="#" class="text-success fw-bold text-decoration-none" data-bs-target="#loginModal" data-bs-toggle="modal" data-bs-dismiss="modal">Увійти</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/auth.js"></script>
+
+</body>
+</html>
